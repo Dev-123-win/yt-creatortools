@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   authors: [{ name: "YTToolkit Team" }],
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   robots: "index, follow",
+  other: {
+    monetag: "d90841c41c4c0008f269c7502e69dda6",
+  },
 };
 
 export default function RootLayout({
@@ -22,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${outfit.variable} font-sans bg-background text-foreground antialiased`}>
         <div className="relative min-h-screen flex flex-col overflow-x-hidden">
           {/* Global Background Effects */}
