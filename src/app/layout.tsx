@@ -34,12 +34,30 @@ export default function RootLayout({
             <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px]" />
           </div>
           
-        {/* Monetag Script Placeholders */}
+        {/* Monetag Onclick Script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Monetag Integration
-              (function(s,u,z,p){s.src=u,s.setAttribute('data-zone',z),p.appendChild(s);})(document.createElement('script'),'https://the-domain.com/script.js',1234567,document.body||document.documentElement);
+              (function(s){s.dataset.zone='11013402',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
+            `,
+          }}
+        />
+
+        {/* Monetag Push Notifications */}
+        <script src="https://5gvci.com/act/files/tag.min.js?z=11013403" data-cfasync="false" async></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(s){s.dataset.zone='11013404',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
+            `,
+          }}
+        />
+
+        {/* Monetag Vignette Banner */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(s){s.dataset.zone='11013410',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
             `,
           }}
         />

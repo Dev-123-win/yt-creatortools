@@ -56,6 +56,7 @@ export function Footer() {
               <li><Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">About YTToolkit</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Support Center</Link></li>
+              <li><a href="https://omg10.com/4/11013399" target="_blank" rel="sponsored noopener noreferrer" className="text-primary hover:underline font-black">Featured Resource</a></li>
             </ul>
           </div>
         </div>
