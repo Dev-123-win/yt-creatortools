@@ -14,7 +14,7 @@ interface ToolLayoutProps {
 
 export function ToolLayout({ title, description, icon: Icon, children, seoContent }: ToolLayoutProps) {
   return (
-    <div className="max-w-6xl mx-auto px-4 pb-32">
+    <div className="w-full max-w-[1152px] mx-auto px-4 pb-32">
       {/* Breadcrumb */}
       <div className="flex justify-between items-center mb-12">
         <nav className="flex items-center gap-3 text-[16px] leading-[24px] font-semibold text-mute">

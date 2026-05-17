@@ -4,7 +4,7 @@ import { Play as YoutubeIcon, Globe, Send, Mail } from "lucide-react";
 export function Footer() {
   return (
     <footer className="bg-ink border-t border-ink-soft pt-3xl pb-xl px-xl mt-32">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full max-w-[1280px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-sm">

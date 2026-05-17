@@ -42,7 +42,7 @@ export function Navbar() {
         )}
       >
         <div className={cn(
-          "max-w-7xl mx-auto rounded-md transition-all duration-700 px-xl py-md flex items-center justify-between border",
+          "w-full max-w-[1280px] mx-auto rounded-md transition-all duration-700 px-xl py-md flex items-center justify-between border",
           isScrolled 
             ? "bg-canvas/90 backdrop-blur-2xl border-mute shadow-sm" 
             : "bg-transparent border-transparent"

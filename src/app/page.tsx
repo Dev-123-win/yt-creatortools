@@ -103,7 +103,7 @@ export default function Home() {
       <section ref={heroRef} className="relative px-6 pt-24 pb-32 overflow-hidden min-h-[90vh] flex items-center">
         <motion.div
           style={{ opacity }}
-          className="max-w-7xl mx-auto text-center relative z-10"
+          className="w-full max-w-[1280px] mx-auto text-center relative z-10"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -158,10 +158,10 @@ export default function Home() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        className="max-w-7xl mx-auto px-6 w-full"
+        className="w-full max-w-[1280px] mx-auto px-6 w-full"
       >
         <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10">
-          <div className="max-w-2xl">
+          <div className="w-full max-w-[672px]">
             <motion.h2 variants={itemVariants} className="font-display text-[48px] font-medium mb-sm tracking-tight text-ink">
               Core <span className="text-primary">Utilities.</span>
             </motion.h2>
@@ -186,7 +186,7 @@ export default function Home() {
 
       {/* Features Showcase */}
       <section className="bg-canvas-soft py-40 rounded-md mx-6 border border-mute/30 shadow-sm relative">
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="w-full max-w-[1280px] mx-auto px-8 relative z-10">
           <div className="text-center mb-3xl">
             <h2 className="font-display text-[48px] font-medium mb-md tracking-tight text-ink">
               Engineered <br />
@@ -223,7 +223,7 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="max-w-4xl mx-auto px-6 w-full">
+      <section className="w-full max-w-[896px] mx-auto px-6 w-full">
         <h2 className="font-display text-[48px] font-medium mb-20 text-center tracking-tight text-ink">
           Deep <span className="text-primary">Answers.</span>
         </h2>
