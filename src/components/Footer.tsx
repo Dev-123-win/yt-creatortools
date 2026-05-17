@@ -21,8 +21,8 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <Link href="/" className="inline-flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center">
-                <YoutubeIcon className="w-3.5 h-3.5 text-white" fill="currentColor" />
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center overflow-hidden border border-[#e5e2e2] shadow-sm">
+                <img src="/logo.png" alt="YTToolkit Logo" className="w-full h-full object-cover" />
               </div>
               <span
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: "17px", letterSpacing: "-0.01em" }}

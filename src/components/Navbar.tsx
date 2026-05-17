@@ -57,9 +57,9 @@ export function Navbar() {
               whileHover={{ rotate: 8, scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
-              className="w-9 h-9 rounded-xl bg-[#000] flex items-center justify-center shadow-sm"
+              className="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden shadow-sm border border-[#e5e2e2]"
             >
-              <YoutubeIcon className="w-4 h-4 text-white" fill="currentColor" />
+              <img src="/logo.png" alt="YTToolkit Logo" className="w-full h-full object-cover" />
             </motion.div>
             <span
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
