@@ -1,14 +1,14 @@
 "use client";
 
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
-import { 
-  Image as ImageIcon, 
-  Tag, 
-  FileText, 
-  Layout, 
-  UserCircle, 
-  Hash, 
-  Eye, 
+import {
+  Image as ImageIcon,
+  Tag,
+  FileText,
+  Layout,
+  UserCircle,
+  Hash,
+  Eye,
   Type,
   Play as YoutubeIcon,
   Zap,
@@ -79,8 +79,8 @@ const containerVariants: Variants = {
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { type: "spring", stiffness: 100, damping: 20 }
   },
@@ -101,7 +101,7 @@ export default function Home() {
     <div className="flex flex-col gap-40 pb-40">
       {/* Hero Section */}
       <section ref={heroRef} className="relative px-6 pt-24 pb-32 overflow-hidden min-h-[90vh] flex items-center">
-        <motion.div 
+        <motion.div
           style={{ opacity }}
           className="max-w-7xl mx-auto text-center relative z-10"
         >
@@ -114,23 +114,23 @@ export default function Home() {
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="eyebrow-uppercase text-ink">Trusted by 10k+ Creators</span>
             </div>
-            
+
             <h1 className="font-display text-[56px] font-medium mb-lg tracking-tight leading-none text-ink">
               The Professional <br />
               <span className="text-primary">YouTube Suite.</span>
             </h1>
-            
+
             <div className="max-w-2xl mx-auto mb-12 p-8 bg-canvas-soft/40 backdrop-blur-md border border-mute/20 rounded-2xl shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors duration-500">
               <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-primary to-primary/10" />
               <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500" />
               <p className="text-[20px] leading-[32px] text-body pl-2 relative z-10 text-left">
-                High-fidelity utilities engineered for elite YouTube growth. 
+                High-fidelity utilities engineered for elite YouTube growth.
                 <span className="text-ink font-semibold block mt-2">Extract, optimize, and dominate the algorithm.</span>
               </p>
             </div>
-            
+
             <div className="flex flex-wrap justify-center gap-6 relative z-20">
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' })}
@@ -152,8 +152,8 @@ export default function Home() {
       </section>
 
       {/* Tools Grid with Staggered Animation */}
-      <motion.section 
-        id="tools" 
+      <motion.section
+        id="tools"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -171,7 +171,7 @@ export default function Home() {
           </div>
           <motion.div variants={itemVariants} className="badge-pill border border-mute flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="eyebrow-uppercase">SYSTEM STATUS: OPTIMIZED</span>
+            <span className="eyebrow-uppercase"></span>
           </motion.div>
         </div>
 
@@ -194,26 +194,26 @@ export default function Home() {
             </h2>
             <p className="text-body text-[20px] leading-[30px]">Why the world&apos;s largest channels use our infrastructure.</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-24">
-            <Feature 
-              icon={Zap} 
-              title="Zero Latency" 
-              desc="Our serverless architecture fetches data in <80ms, bypassing traditional rate limits." 
+            <Feature
+              icon={Zap}
+              title="Zero Latency"
+              desc="Our serverless architecture fetches data in <80ms, bypassing traditional rate limits."
             />
-            <Feature 
-              icon={Shield} 
-              title="Military Privacy" 
-              desc="Zero logs. Zero tracking. Your content strategy is a trade secret; we keep it that way." 
+            <Feature
+              icon={Shield}
+              title="Military Privacy"
+              desc="Zero logs. Zero tracking. Your content strategy is a trade secret; we keep it that way."
             />
-            <Feature 
-              icon={YoutubeIcon} 
-              title="Universal Sync" 
-              desc="Full native support for Shorts, Premiere, Live Streams, and VOD formats." 
+            <Feature
+              icon={YoutubeIcon}
+              title="Universal Sync"
+              desc="Full native support for Shorts, Premiere, Live Streams, and VOD formats."
             />
           </div>
         </div>
-        
+
         {/* Animated Background SVG */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
           <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -228,17 +228,17 @@ export default function Home() {
           Deep <span className="text-primary">Answers.</span>
         </h2>
         <div className="grid grid-cols-1 gap-10">
-          <FAQItem 
-            question="Is it truly free for enterprise use?" 
-            answer="Yes. We leverage advanced client-side processing to eliminate infrastructure costs, allowing us to provide pro-level tools for free indefinitely." 
+          <FAQItem
+            question="Is it truly free for enterprise use?"
+            answer="Yes. We leverage advanced client-side processing to eliminate infrastructure costs, allowing us to provide pro-level tools for free indefinitely."
           />
-          <FAQItem 
-            question="How accurate is the tag extraction?" 
-            answer="100%. We pull data directly from the video metadata layer, exposing the exact keywords provided to the YouTube algorithm." 
+          <FAQItem
+            question="How accurate is the tag extraction?"
+            answer="100%. We pull data directly from the video metadata layer, exposing the exact keywords provided to the YouTube algorithm."
           />
-          <FAQItem 
-            question="Can I download 4K thumbnails?" 
-            answer="Absolutely. If a creator uploads a 4K asset, our MaxRes extractor will fetch it in its original native resolution." 
+          <FAQItem
+            question="Can I download 4K thumbnails?"
+            answer="Absolutely. If a creator uploads a 4K asset, our MaxRes extractor will fetch it in its original native resolution."
           />
         </div>
       </section>
@@ -248,7 +248,7 @@ export default function Home() {
 
 function Feature({ icon: Icon, title, desc }: any) {
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -5 }}
       className="flex flex-col items-center text-center group cursor-pointer"
     >
@@ -263,14 +263,14 @@ function Feature({ icon: Icon, title, desc }: any) {
 
 function FAQItem({ question, answer }: any) {
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ scale: 1.02 }}
       className="bg-canvas p-xl rounded-md border border-mute/30 hover:border-primary/50 transition-all duration-300 shadow-sm cursor-pointer group"
     >
       <h3 className="font-display text-[24px] font-medium mb-sm text-ink flex justify-between items-center tracking-tight group-hover:text-primary transition-colors">
         {question}
         <div className="w-10 h-10 rounded-full bg-canvas-soft flex items-center justify-center group-hover:bg-primary group-hover:rotate-45 transition-all duration-300">
-           <Zap className="w-4 h-4 text-mute group-hover:text-on-primary" />
+          <Zap className="w-4 h-4 text-mute group-hover:text-on-primary" />
         </div>
       </h3>
       <p className="text-body text-[18px] leading-[27px]">{answer}</p>
