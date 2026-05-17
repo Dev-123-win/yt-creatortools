@@ -42,11 +42,11 @@ export function ToolCard({ title, description, href, icon: Icon, color }: ToolCa
           <h3 className="font-display text-[24px] font-medium tracking-tight mb-md text-ink group-hover:text-primary transition-colors leading-tight">
             {title}
           </h3>
-          <p className="text-body text-body-md leading-relaxed mb-xl flex-grow font-normal">
+          <p className="text-body text-[18px] leading-[27px] mb-xl flex-grow font-normal">
             {description}
           </p>
           
-          <div className="flex items-center gap-2 text-body-sm font-semibold text-primary group-hover:gap-4 transition-all duration-300">
+          <div className="flex items-center gap-2 text-[16px] leading-[24px] font-semibold text-primary group-hover:gap-4 transition-all duration-300">
             Open Tool
             <ChevronRight className="w-4 h-4" />
           </div>

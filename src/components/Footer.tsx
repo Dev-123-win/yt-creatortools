@@ -15,7 +15,7 @@ export function Footer() {
                 YT<span className="text-primary">Toolkit</span>
               </span>
             </Link>
-            <p className="text-mute text-body-sm leading-relaxed mb-sm">
+            <p className="text-mute text-[16px] leading-[24px] mb-sm">
               The elite utility suite for YouTube creators. Designed for high-performance extraction and viral channel growth.
             </p>
             <div className="flex gap-4">
@@ -33,7 +33,7 @@ export function Footer() {
 
           <div>
             <h4 className="text-on-primary mb-lg eyebrow-uppercase">Extraction</h4>
-            <ul className="space-y-sm text-body-sm text-mute">
+            <ul className="space-y-sm text-[16px] leading-[24px] text-mute">
               <li><Link href="/youtube-tags-extractor" className="hover:text-primary transition-colors">Tags Extractor</Link></li>
               <li><Link href="/youtube-metadata-extractor" className="hover:text-primary transition-colors">Metadata Extractor</Link></li>
               <li><Link href="/youtube-hashtag-extractor" className="hover:text-primary transition-colors">Hashtag Extractor</Link></li>
@@ -42,7 +42,7 @@ export function Footer() {
 
           <div>
             <h4 className="text-on-primary mb-lg eyebrow-uppercase">Visuals</h4>
-            <ul className="space-y-sm text-body-sm text-mute">
+            <ul className="space-y-sm text-[16px] leading-[24px] text-mute">
               <li><Link href="/youtube-thumbnail-downloader" className="hover:text-primary transition-colors">Thumbnail Downloader</Link></li>
               <li><Link href="/youtube-banner-downloader" className="hover:text-primary transition-colors">Banner Downloader</Link></li>
               <li><Link href="/youtube-logo-downloader" className="hover:text-primary transition-colors">Logo Downloader</Link></li>
@@ -51,7 +51,7 @@ export function Footer() {
 
           <div>
             <h4 className="text-on-primary mb-lg eyebrow-uppercase">Company</h4>
-            <ul className="space-y-sm text-body-sm text-mute">
+            <ul className="space-y-sm text-[16px] leading-[24px] text-mute">
               <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">About YTToolkit</Link></li>

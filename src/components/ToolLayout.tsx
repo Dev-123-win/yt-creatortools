@@ -17,7 +17,7 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
     <div className="max-w-6xl mx-auto px-4 pb-32">
       {/* Breadcrumb */}
       <div className="flex justify-between items-center mb-12">
-        <nav className="flex items-center gap-3 text-body-sm font-semibold text-mute">
+        <nav className="flex items-center gap-3 text-[16px] leading-[24px] font-semibold text-mute">
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight className="w-4 h-4 opacity-50" />
           <Link href="/#tools" className="hover:text-primary transition-colors">Tools</Link>
@@ -67,7 +67,7 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
             </div>
             <h2 className="font-display text-[32px] font-medium text-ink">Pro Tips & Guide</h2>
           </div>
-          <div className="prose prose-slate max-w-none prose-p:text-body prose-p:text-body-md prose-headings:text-ink prose-headings:font-display prose-headings:font-medium prose-strong:text-ink prose-li:text-body">
+          <div className="prose prose-slate max-w-none prose-p:text-body prose-p:text-[18px] prose-p:leading-[27px] prose-headings:text-ink prose-headings:font-display prose-headings:font-medium prose-strong:text-ink prose-li:text-body">
             {seoContent}
           </div>
         </motion.div>
@@ -75,7 +75,7 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
 
       {/* Monetization Placeholder */}
       <div className="mt-20">
-        <div className="bg-canvas-soft h-32 rounded-md flex items-center justify-center text-mute text-body-sm eyebrow-uppercase border border-dashed border-mute/50">
+        <div className="bg-canvas-soft h-32 rounded-md flex items-center justify-center text-mute text-[16px] leading-[24px] eyebrow-uppercase border border-dashed border-mute/50">
           Premium Sponsorship Space
         </div>
       </div>

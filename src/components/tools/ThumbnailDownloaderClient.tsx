@@ -60,7 +60,7 @@ export default function ThumbnailDownloaderClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="p-xl bg-canvas border border-mute/30 rounded-md">
               <h4 className="text-on-primary mb-md eyebrow-uppercase">Supported Formats</h4>
-              <ul className="space-y-sm text-body-sm text-mute">
+              <ul className="space-y-sm text-[16px] leading-[24px] text-mute">
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> YouTube Originals</li>
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> YouTube Shorts (Vertical)</li>
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> Live Stream VODs</li>
@@ -68,7 +68,7 @@ export default function ThumbnailDownloaderClient() {
             </div>
             <div className="p-xl bg-canvas border border-mute/30 rounded-md">
               <h4 className="text-on-primary mb-md eyebrow-uppercase">Quality Layers</h4>
-              <ul className="space-y-sm text-body-sm text-mute">
+              <ul className="space-y-sm text-[16px] leading-[24px] text-mute">
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> 3840x2160 (Native)</li>
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> 1920x1080 (HQ)</li>
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> 1280x720 (Standard)</li>

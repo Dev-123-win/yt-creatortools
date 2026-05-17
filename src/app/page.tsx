@@ -120,7 +120,7 @@ export default function Home() {
               <span className="text-primary">YouTube Suite.</span>
             </h1>
             
-            <p className="max-w-2xl mx-auto text-body-lg text-body mb-xl leading-relaxed">
+            <p className="max-w-2xl mx-auto text-[20px] leading-[30px] text-body mb-xl">
               High-fidelity utilities engineered for elite YouTube growth. 
               Extract, optimize, and dominate the algorithm.
             </p>
@@ -134,15 +134,6 @@ export default function Home() {
               >
                 Explore Tools
               </motion.button>
-              <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
-                <Link 
-                  href="/#tools"
-                  className="btn-tertiary flex items-center gap-3"
-                >
-                  Explore Tools
-                  <ArrowRight className="w-4 h-4 text-primary" />
-                </Link>
-              </motion.div>
             </div>
           </motion.div>
         </motion.div>
@@ -166,7 +157,7 @@ export default function Home() {
             <motion.h2 variants={itemVariants} className="font-display text-[48px] font-medium mb-sm tracking-tight text-ink">
               Core <span className="text-primary">Utilities.</span>
             </motion.h2>
-            <motion.p variants={itemVariants} className="text-body text-body-lg">
+            <motion.p variants={itemVariants} className="text-body text-[20px] leading-[30px]">
               Proprietary extraction engines optimized for zero-latency research.
             </motion.p>
           </div>
@@ -193,7 +184,7 @@ export default function Home() {
               Engineered <br />
               <span className="text-primary">Without Compromise.</span>
             </h2>
-            <p className="text-body text-body-lg">Why the world&apos;s largest channels use our infrastructure.</p>
+            <p className="text-body text-[20px] leading-[30px]">Why the world&apos;s largest channels use our infrastructure.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-24">
@@ -257,7 +248,7 @@ function Feature({ icon: Icon, title, desc }: any) {
         <Icon className="w-12 h-12 text-primary group-hover:text-on-primary transition-colors duration-300" />
       </div>
       <h3 className="font-display text-[32px] font-medium mb-sm text-ink group-hover:text-primary transition-colors">{title}</h3>
-      <p className="text-body text-body-md px-4">{desc}</p>
+      <p className="text-body text-[18px] leading-[27px] px-4">{desc}</p>
     </motion.div>
   );
 }
@@ -274,7 +265,7 @@ function FAQItem({ question, answer }: any) {
            <Zap className="w-4 h-4 text-mute group-hover:text-on-primary" />
         </div>
       </h3>
-      <p className="text-body text-body-md">{answer}</p>
+      <p className="text-body text-[18px] leading-[27px]">{answer}</p>
     </motion.div>
   );
 }
