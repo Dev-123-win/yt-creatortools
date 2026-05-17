@@ -2,16 +2,10 @@ import { Metadata } from "next";
 import ThumbnailDownloaderClient from "@/components/tools/ThumbnailDownloaderClient";
 
 export const metadata: Metadata = {
-  title: "YouTube Thumbnail Downloader | Download HD Thumbnails Free",
-  description: "Get high-quality YouTube thumbnails (4K, HD, HQ) for free. Paste the video link and download instantly without registration.",
-  keywords: ["youtube thumbnail downloader", "download youtube thumbnail", "get youtube thumbnail hq"],
-  openGraph: {
-    title: "YouTube Thumbnail Downloader | YTToolkit",
-    description: "Download high-resolution YouTube thumbnails instantly.",
-    type: "website",
-  },
+  title: "YouTube Thumbnail Downloader — Download 4K Thumbnails Free | YTToolkit",
+  description: "Download YouTube video thumbnails in 4K MaxRes, HD, SD, and MQ quality. Free, instant, no login required. Works with Shorts and Live streams.",
 };
 
-export default function Page() {
+export default function ThumbnailDownloaderPage() {
   return <ThumbnailDownloaderClient />;
 }

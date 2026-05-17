@@ -1,132 +1,399 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 @theme {
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-display: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono);
+  /* Iridescent Clarity Color System */
+  --color-surface:             #fcf8f9;
+  --color-surface-dim:         #dcd9d9;
+  --color-surface-bright:      #fcf8f9;
+  --color-surface-lowest:      #ffffff;
+  --color-surface-low:         #f6f3f3;
+  --color-surface-container:   #f0eded;
+  --color-surface-high:        #ebe7e7;
+  --color-surface-highest:     #e5e2e2;
+  --color-on-surface:          #1c1b1c;
+  --color-on-surface-variant:  #45474b;
+  --color-outline:             #76777b;
+  --color-outline-variant:     #c6c6cb;
 
-  --color-primary: #ff4f00;
-  --color-on-primary: #fffefb;
-  
-  --color-ink: #201515;
-  --color-ink-soft: #2f2a26;
-  --color-ink-mid: #36342e;
-  
-  --color-body: #605d52;
-  --color-body-mid: #939084;
-  --color-mute: #c5c0b1;
-  
-  --color-canvas: #fffefb;
-  --color-canvas-soft: #f8f4f0;
-  
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-pill: 9999px;
-  --radius-full: 9999px;
-  
+  /* Primary (obsidian black) */
+  --color-primary:             #000000;
+  --color-on-primary:          #ffffff;
+  --color-primary-container:   #181c22;
+  --color-on-primary-container:#80848c;
+  --color-inverse-primary:     #c3c6cf;
+
+  /* Secondary */
+  --color-secondary:           #5a5f68;
+  --color-on-secondary:        #ffffff;
+  --color-secondary-container: #dee2ed;
+  --color-on-secondary-container:#60656e;
+
+  /* Tertiary (warm obsidian) */
+  --color-tertiary:            #000000;
+  --color-on-tertiary:         #ffffff;
+  --color-tertiary-container:  #231a12;
+
+  /* Error */
+  --color-error:               #ba1a1a;
+  --color-on-error:            #ffffff;
+  --color-error-container:     #ffdad6;
+  --color-on-error-container:  #93000a;
+
+  /* Background */
+  --color-background:          #fcf8f9;
+  --color-on-background:       #1c1b1c;
+  --color-surface-variant:     #e5e2e2;
+
+  /* Legacy aliases for backward compat */
+  --color-canvas:              #ffffff;
+  --color-canvas-soft:         #f6f3f3;
+  --color-ink:                 #1c1b1c;
+  --color-ink-soft:            #181c22;
+  --color-ink-mid:             #45474b;
+  --color-body:                #5a5f68;
+  --color-body-mid:            #76777b;
+  --color-mute:                #c6c6cb;
+
+  /* Iridescent accent tints */
+  --color-iris-pink:           #f9c6d0;
+  --color-iris-blue:           #c6d4f9;
+  --color-iris-yellow:         #f9f0c6;
+  --color-iris-green:          #c6f9d8;
+  --color-iris-purple:         #e0c6f9;
+
+  /* Typography */
+  --font-display: 'Newsreader', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', monospace;
+
+  /* Spacing */
   --spacing-xxs: 2px;
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 16px;
-  --spacing-xl: 24px;
+  --spacing-xs:  4px;
+  --spacing-sm:  8px;
+  --spacing-md:  12px;
+  --spacing-lg:  16px;
+  --spacing-xl:  24px;
   --spacing-2xl: 32px;
   --spacing-3xl: 48px;
   --spacing-4xl: 64px;
+
+  /* Radii */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.75rem;
+  --radius-lg:   1rem;
+  --radius-xl:   1.5rem;
+  --radius-pill: 9999px;
 }
 
-:root {
-  --background: #fffefb;
-  --foreground: #201515;
+/* ─── Base Reset ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  border-color: var(--color-outline-variant);
 }
 
-* {
-  border-color: var(--color-mute);
-  cursor: default;
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: var(--color-canvas);
-  color: var(--color-ink);
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h4, h5, h6, label, button, input, select, textarea {
   font-family: var(--font-sans);
 }
 
-/* Typography Defaults */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-}
+a, button { cursor: pointer; }
 
-/* Components Custom Classes */
-.btn-primary {
-  @apply bg-primary text-on-primary px-xl py-md rounded-md font-semibold text-[18px] transition-colors hover:bg-[#e64600];
-}
-
-.btn-secondary {
-  @apply bg-ink text-on-primary px-xl py-md rounded-md font-semibold text-[18px] transition-colors hover:bg-ink-soft;
-}
-
-.btn-tertiary {
-  @apply bg-canvas text-ink border border-ink px-xl py-md rounded-md font-semibold text-[18px] transition-colors hover:bg-canvas-soft;
-}
-
-.btn-text {
-  @apply bg-canvas text-ink px-lg py-sm rounded-md font-bold text-[14.4px] tracking-[0.144px] transition-colors hover:bg-canvas-soft;
-}
-
-.card-content {
-  @apply bg-canvas-soft text-ink rounded-md p-xl border border-transparent;
-}
-
-.card-feature-dark {
-  @apply bg-ink text-on-primary rounded-md p-xl;
-}
-
-.text-input {
-  @apply bg-canvas text-ink border border-ink rounded-sm px-lg py-md text-[18px] outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all;
-}
-
-.eyebrow-uppercase {
-  @apply font-display text-[14px] font-medium tracking-[1px] uppercase;
-}
-
-.badge-pill {
-  @apply bg-canvas-soft text-ink text-[16px] px-md py-xs rounded-pill;
-}
-
-/* Interactive Elements */
-a, button {
-  cursor: pointer;
-}
-
+/* ─── Selection ──────────────────────────────────────────── */
 ::selection {
-  background: rgba(255, 79, 0, 0.2);
-  color: #ff4f00;
+  background: rgba(0,0,0,0.12);
+  color: #000;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-canvas-soft);
-}
+/* ─── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-surface-low); }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-mute);
+  background: var(--color-outline-variant);
   border-radius: 9999px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-body-mid);
+::-webkit-scrollbar-thumb:hover { background: var(--color-outline); }
+
+/* ─── Iridescent Background Blob ────────────────────────── */
+.iris-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  overflow: hidden;
+}
+.iris-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  opacity: 0.08;
+  animation: blob-drift 18s ease-in-out infinite;
+}
+.iris-blob-1 {
+  width: 600px; height: 600px;
+  top: -200px; left: -100px;
+  background: radial-gradient(circle, #f9c6d0, transparent 70%);
+  animation-delay: 0s;
+}
+.iris-blob-2 {
+  width: 500px; height: 500px;
+  top: 30%; right: -150px;
+  background: radial-gradient(circle, #c6d4f9, transparent 70%);
+  animation-delay: -6s;
+}
+.iris-blob-3 {
+  width: 400px; height: 400px;
+  bottom: -100px; left: 30%;
+  background: radial-gradient(circle, #c6f9d8, transparent 70%);
+  animation-delay: -12s;
+}
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -40px) scale(1.05); }
+  66%       { transform: translate(-20px, 30px) scale(0.95); }
 }
 
-/* Utility Animations */
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+/* ─── Glass Card ─────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.70);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+}
+.glass-dark {
+  background: rgba(24, 28, 34, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ─── Prismatic Card ─────────────────────────────────────── */
+.prismatic-card {
+  background: rgba(255,255,255,0.70);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.40);
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
+.prismatic-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 1rem 1rem 0 0;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
+}
+
+/* ─── Input ──────────────────────────────────────────────── */
+.input-physics {
+  font-family: var(--font-sans);
+  background: rgba(255,255,255,0.8);
+  border: 1.5px solid var(--color-outline-variant);
+  border-radius: 0.5rem;
+  color: var(--color-on-surface);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  outline: none;
+}
+.input-physics:focus {
+  border-color: var(--color-on-surface);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+.input-physics::placeholder { color: var(--color-outline); }
+
+/* ─── Buttons ────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 0.5rem;
+  background: #000;
+  color: #fff;
+  border: 1.5px solid #000;
+  letter-spacing: -0.01em;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary:hover {
+  background: #1c1b1c;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(1px); box-shadow: none; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 0.5rem;
+  background: rgba(255,255,255,0.8);
+  color: var(--color-on-surface);
+  border: 1.5px solid var(--color-outline-variant);
+  letter-spacing: -0.01em;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  backdrop-filter: blur(8px);
+}
+.btn-secondary:hover {
+  background: #fff;
+  border-color: var(--color-outline);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+.btn-secondary:active { transform: translateY(1px); }
+
+/* ─── Label Caps ─────────────────────────────────────────── */
+.label-caps {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-outline);
+}
+
+/* ─── Data Chip ──────────────────────────────────────────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  letter-spacing: 0.02em;
+}
+
+/* ─── Floating Orb Physics ───────────────────────────────── */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(1deg); }
+  66%       { transform: translateY(6px) rotate(-1deg); }
+}
+@keyframes float-x {
+  0%, 100% { transform: translateX(0px); }
+  50%       { transform: translateX(8px); }
+}
+.float-anim { animation: float-y 6s ease-in-out infinite; }
+.float-anim-slow { animation: float-y 9s ease-in-out infinite; }
+.float-x { animation: float-x 4s ease-in-out infinite; }
+
+/* ─── Scroll Progress Bar ────────────────────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #000 0%, #5a5f68 100%);
+  transform-origin: 0%;
+  z-index: 9999;
+}
+
+/* ─── Prose Overrides ────────────────────────────────────── */
+.prose {
+  --tw-prose-body: var(--color-body);
+  --tw-prose-headings: var(--color-on-surface);
+  --tw-prose-links: #000;
+  --tw-prose-bold: var(--color-on-surface);
+  font-family: var(--font-sans);
+}
+
+/* ─── Eyebrow ────────────────────────────────────────────── */
+.eyebrow-uppercase {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ─── Badge Pill ─────────────────────────────────────────── */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--color-outline-variant);
+  color: var(--color-on-surface);
+  backdrop-filter: blur(8px);
+}
+
+/* ─── Step Circles ───────────────────────────────────────── */
+.step-circle {
+  width: 32px; height: 32px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-outline-variant);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  font-family: var(--font-sans);
+  color: var(--color-on-surface-variant);
+  flex-shrink: 0;
+}
+
+/* ─── Shimmer Skeleton ───────────────────────────────────── */
+@keyframes shimmer {
+  from { background-position: -400px 0; }
+  to   { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f0eded 25%, #e5e2e2 50%, #f0eded 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
+/* ─── Physics Spring Ripple on click ────────────────────── */
+.ripple-btn { position: relative; overflow: hidden; }
+.ripple-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+.ripple-btn:active::after { transform: scale(2.5); opacity: 1; transition: none; }

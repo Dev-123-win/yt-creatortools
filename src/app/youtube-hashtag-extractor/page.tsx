@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Hash, Copy, Check, AlertCircle, Loader2, Sparkles } from "lucide-react";
+import { Hash, Copy, Check, AlertCircle, Loader2, Link2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -14,29 +14,29 @@ export default function HashtagExtractor() {
   const [allCopied, setAllCopied] = useState(false);
 
   const handleExtract = async () => {
-    if (!url) return;
+    if (!url.trim()) return;
     setLoading(true);
     setError(null);
     setHashtags([]);
     
     try {
-      const response = await fetch("/api/extract", {
+      const res = await fetch("/api/extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-      const data = await response.json();
+      const data = await res.json();
       
       if (data.error) {
         setError(data.error);
       } else {
-        const uniqueHashtags = Array.from(new Set(data.hashtags || []));
-        setHashtags(uniqueHashtags as string[]);
+        const uniqueHashtags = Array.from(new Set(data.hashtags || [])) as string[];
+        setHashtags(uniqueHashtags);
         if (uniqueHashtags.length === 0) {
           setError("No hashtags found in the description of this video.");
         }
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred during extraction. Please check the URL.");
     } finally {
       setLoading(false);
@@ -58,96 +58,132 @@ export default function HashtagExtractor() {
   return (
     <ToolLayout
       title="Hashtag Extractor"
-      description="Quickly scan and extract all trending hashtags from any YouTube video or Shorts."
+      description="Quickly scan and extract all trending hashtags from any YouTube video or Shorts description."
       icon={Hash}
+      iconColor="#f9c6d0"
       seoContent={
-        <div className="space-y-8">
-          <section>
-            <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">Algorithm Discovery</h3>
-            <p className="text-body text-[20px] leading-[30px]">
-              Hashtags act as high-level category markers for the YouTube algorithm. By extracting hashtags 
-              from top-performing videos in your niche, you can ensure your content is indexed alongside 
-              the right audience segments.
-            </p>
-          </section>
+        <div>
+          <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "18px", fontWeight: 700, color: "#1c1b1c", marginBottom: "8px" }}>
+            Algorithm Discovery
+          </h3>
+          <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "15px", lineHeight: 1.7, color: "#5a5f68" }}>
+            Hashtags act as high-level category markers for the YouTube algorithm. By extracting hashtags from top-performing videos in your niche, you can ensure your content is indexed alongside the right audience segments and trending topics.
+          </p>
         </div>
       }
     >
-      <div className="flex flex-col gap-16">
-        {/* Input Engine */}
-        <div className="bg-canvas p-sm rounded-md border border-mute flex flex-col md:flex-row gap-3 shadow-sm">
-          <div className="flex-grow flex items-center px-4 gap-4">
-            <Sparkles className="w-5 h-5 text-primary opacity-30" />
+      <div className="flex flex-col gap-6">
+        {/* Input */}
+        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2">
+          <div className="flex items-center gap-3 flex-grow px-4 py-1">
+            <Link2 className="w-4 h-4 text-[#c6c6cb] flex-shrink-0" />
             <input
-              type="text"
-              placeholder="Paste Video or Shorts URL..."
-              className="w-full py-4 outline-none text-ink font-medium text-[18px] bg-transparent placeholder-mute"
+              id="hashtag-url-input"
+              type="url"
+              placeholder="Paste a YouTube Video or Shorts URL…"
+              className="w-full py-2.5 bg-transparent outline-none text-[#1c1b1c] placeholder-[#c6c6cb]"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "15px", fontWeight: 500 }}
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
+              aria-label="YouTube video URL"
             />
           </div>
           <motion.button
+            id="hashtag-extract-btn"
             whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
             onClick={handleExtract}
-            disabled={loading}
-            className="btn-primary"
+            disabled={loading || !url.trim()}
+            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {loading ? "Please wait..." : "Get Hashtags"}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Extract"}
           </motion.button>
         </div>
 
+        {/* Error */}
         <AnimatePresence>
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-6 rounded-[32px] bg-red-50 border border-red-100 text-red-500 text-sm font-black flex items-center gap-3"
+              key="err"
+              initial={{ opacity: 0, y: -8, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="flex items-center gap-3 p-4 rounded-xl bg-[#ffdad6] border border-[#ffb4ab] text-[#93000a]"
+              role="alert"
             >
-              <AlertCircle className="w-5 h-5" />
-              {error}
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "14px", fontWeight: 600 }}>{error}</span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Results Engine */}
+        {/* Loading skeleton */}
+        <AnimatePresence>
+          {loading && (
+            <motion.div key="skel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="flex flex-wrap gap-3">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="skeleton h-10 rounded-xl" style={{ width: `${80 + Math.random() * 60}px` }} />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Results */}
         <AnimatePresence>
           {hashtags.length > 0 && !loading && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col gap-10"
-            >
-              <div className="flex justify-between items-center px-4">
-                <h3 className="font-display text-[24px] font-medium text-ink tracking-tight">Extracted ({hashtags.length})</h3>
+            <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-5">
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="chip bg-[#f9c6d0]/40 text-[#1c1b1c] border border-[#f9c6d0]">
+                    {hashtags.length} hashtags found
+                  </span>
+                </div>
                 <motion.button
-                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={copyAll}
-                  className="btn-secondary flex items-center gap-2"
+                  className="btn-secondary !py-2 !px-5 !text-[13px] !rounded-xl"
                 >
-                  {allCopied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
-                  {allCopied ? "Copied All" : "Copy All"}
+                  {allCopied ? <Check className="w-4 h-4 text-[#4ade80]" /> : <Copy className="w-4 h-4" />}
+                  {allCopied ? "Copied!" : "Copy All"}
                 </motion.button>
               </div>
 
-              <div className="flex flex-wrap gap-4">
-                {hashtags.map((tag, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => copyHashtag(tag, index)}
-                    className="bg-canvas px-lg py-sm rounded-md border border-mute/50 hover:border-primary/50 cursor-pointer transition-all flex items-center gap-4 group shadow-sm"
-                  >
-                    <span className="text-xl font-medium text-primary group-hover:scale-125 transition-transform">#</span>
-                    <span className="text-body-md font-medium text-ink group-hover:text-primary transition-colors">{tag.replace("#", "")}</span>
-                    <div className="text-mute group-hover:text-primary ml-2 transition-colors">
-                      {copiedIndex === index ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
-                    </div>
-                  </motion.div>
-                ))}
+              {/* Tag grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {hashtags.map((tag, i) => {
+                  const rawTag = tag.startsWith("#") ? tag.substring(1) : tag;
+                  return (
+                    <motion.button
+                      key={i}
+                      id={`hashtag-item-${i}`}
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ delay: i * 0.04, type: "spring", stiffness: 300 }}
+                      whileHover={{ scale: 1.03, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => copyHashtag(tag, i)}
+                      className="flex items-center justify-between px-4 py-3 rounded-xl border border-[#e5e2e2] bg-white hover:border-[#f9c6d0] hover:bg-[#fcf8f9] transition-all shadow-sm group text-left"
+                      aria-label={`Copy hashtag: ${tag}`}
+                    >
+                      <div className="flex items-center gap-2 overflow-hidden">
+                         <span className="text-[14px] font-bold text-[#f9c6d0] group-hover:scale-110 transition-transform">#</span>
+                         <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "14px", fontWeight: 600, color: "#1c1b1c" }} className="truncate">
+                           {rawTag}
+                         </span>
+                      </div>
+                      <div className="flex-shrink-0">
+                        {copiedIndex === i
+                          ? <Check className="w-3.5 h-3.5 text-[#4ade80]" />
+                          : <Copy className="w-3.5 h-3.5 text-[#c6c6cb] group-hover:text-[#f9c6d0] transition-colors" />}
+                      </div>
+                    </motion.button>
+                  );
+                })}
               </div>
             </motion.div>
           )}

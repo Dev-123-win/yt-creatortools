@@ -1,305 +1,471 @@
 "use client";
 
-import { motion, useScroll, useTransform, Variants } from "framer-motion";
-import {
-  Image as ImageIcon,
-  Tag,
-  FileText,
-  Layout,
-  UserCircle,
-  Hash,
-  Eye,
-  Type,
-  Play as YoutubeIcon,
-  Zap,
-  Shield,
-  Clock,
-  ArrowRight,
-  Sparkles
-} from "lucide-react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
+import { Image as ImageIcon, Tag, FileText, Layout, UserCircle, Hash, Zap, Shield, Play as YoutubeIcon, ArrowDown, ChevronDown } from "lucide-react";
 import { ToolCard } from "@/components/ToolCard";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const tools = [
   {
     title: "Thumbnail Downloader",
-    description: "Download ultra-high resolution thumbnails and Shorts assets instantly.",
+    description: "Download ultra-high-res video thumbnails in every quality tier — from 4K MaxRes down to preview size.",
     href: "/youtube-thumbnail-downloader",
     icon: ImageIcon,
-    color: "bg-red-500",
+    accentColor: "#f9c6d0",
   },
   {
     title: "Tags Extractor",
-    description: "Deep-scan SEO keywords from any viral video or Live stream.",
+    description: "Reveal the hidden SEO keywords powering any viral video. Copy all tags with one click.",
     href: "/youtube-tags-extractor",
     icon: Tag,
-    color: "bg-blue-500",
+    accentColor: "#c6d4f9",
   },
   {
     title: "Metadata Extractor",
-    description: "Extract video titles and full descriptions in a single high-speed scan.",
+    description: "Pull the full title and description of any YouTube video in one high-speed scan.",
     href: "/youtube-metadata-extractor",
     icon: FileText,
-    color: "bg-purple-500",
+    accentColor: "#e0c6f9",
   },
   {
     title: "Banner Downloader",
-    description: "Get original high-res channel art and branding assets.",
+    description: "Fetch original 2560×1440 channel art from any YouTube channel.",
     href: "/youtube-banner-downloader",
     icon: Layout,
-    color: "bg-orange-500",
+    accentColor: "#f9f0c6",
   },
   {
-    title: "Channel Logo Downloader",
-    description: "Extract original profile pictures in maximum dimensions.",
+    title: "Logo Downloader",
+    description: "Extract full-resolution channel profile pictures without any compression artifacts.",
     href: "/youtube-logo-downloader",
     icon: UserCircle,
-    color: "bg-green-500",
+    accentColor: "#c6f9d8",
   },
   {
     title: "Hashtag Extractor",
-    description: "AI-powered hashtag extraction from video descriptions.",
+    description: "Scan and extract every trending hashtag from any video description in seconds.",
     href: "/youtube-hashtag-extractor",
     icon: Hash,
-    color: "bg-pink-500",
+    accentColor: "#f9c6d0",
   },
 ];
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.3,
-    },
+const features = [
+  {
+    icon: Zap,
+    title: "Zero Latency",
+    desc: "Serverless edge architecture delivers results in under 80ms — no rate limits, no waiting.",
+    color: "#f9f0c6",
   },
-};
+  {
+    icon: Shield,
+    title: "Private by Design",
+    desc: "Zero logs, zero tracking. Your research strategy stays yours — always.",
+    color: "#c6f9d8",
+  },
+  {
+    icon: YoutubeIcon,
+    title: "Universal Support",
+    desc: "Full native support for Shorts, Premieres, Live Streams, and standard VOD formats.",
+    color: "#c6d4f9",
+  },
+];
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 100, damping: 20 }
+const faqs = [
+  {
+    q: "Is it truly free for enterprise use?",
+    a: "Yes. We leverage advanced client-side processing to eliminate infrastructure costs, allowing us to provide pro-level tools for free indefinitely.",
   },
-};
+  {
+    q: "How accurate is the tag extraction?",
+    a: "100%. We pull data directly from the video metadata layer, exposing the exact keywords provided to the YouTube algorithm.",
+  },
+  {
+    q: "Can I download 4K thumbnails?",
+    a: "Absolutely. If a creator uploads a 4K asset, our MaxRes extractor fetches it in its original native resolution.",
+  },
+  {
+    q: "Do I need an account or API key?",
+    a: "No. Every tool works instantly in your browser — no sign-up, no API keys, no installation required.",
+  },
+];
+
+/* ── Floating Orb (physics) ─────────────────────────────── */
+function Orb({ size, top, left, color, delay }: any) {
+  return (
+    <motion.div
+      className="absolute rounded-full pointer-events-none"
+      style={{ width: size, height: size, top, left, background: color, filter: "blur(60px)", opacity: 0.12 }}
+      animate={{ y: [0, -20, 10, 0], x: [0, 10, -8, 0], scale: [1, 1.05, 0.97, 1] }}
+      transition={{ duration: 12 + delay, repeat: Infinity, ease: "easeInOut", delay }}
+    />
+  );
+}
+
+/* ── FAQ Item (accordion) ───────────────────────────────── */
+function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.07, type: "spring", stiffness: 100 }}
+      className="prismatic-card overflow-hidden"
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between p-6 text-left"
+        aria-expanded={open}
+      >
+        <span
+          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "16px", fontWeight: 600, lineHeight: 1.4, color: "#1c1b1c" }}
+          className="pr-4"
+        >
+          {q}
+        </span>
+        <motion.div
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          className="flex-shrink-0 w-8 h-8 rounded-full bg-[#f0eded] flex items-center justify-center"
+        >
+          <ChevronDown className="w-4 h-4 text-[#5a5f68]" />
+        </motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="answer"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 32 }}
+            className="overflow-hidden"
+          >
+            <p
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "15px", lineHeight: 1.7, color: "#5a5f68" }}
+              className="px-6 pb-6"
+            >
+              {a}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+/* ── Feature Card ──────────────────────────────────────── */
+function FeatureCard({ icon: Icon, title, desc, color, index }: any) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, type: "spring", stiffness: 90, damping: 18 }}
+      whileHover={{ y: -6 }}
+      className="prismatic-card p-8 flex flex-col gap-5"
+    >
+      <div
+        className="w-12 h-12 rounded-2xl flex items-center justify-center"
+        style={{ background: color + "66" }}
+      >
+        <Icon className="w-5 h-5 text-[#1c1b1c]" strokeWidth={1.6} />
+      </div>
+      <div>
+        <h3
+          style={{ fontFamily: "'Newsreader', serif", fontSize: "22px", fontWeight: 500, letterSpacing: "-0.01em", color: "#1c1b1c", marginBottom: "8px" }}
+        >
+          {title}
+        </h3>
+        <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "15px", lineHeight: 1.65, color: "#5a5f68" }}>
+          {desc}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── Mouse-tracking hero ─────────────────────────────── */
+function HeroOrbs() {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 40, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 40, damping: 20 });
+
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      mouseX.set((e.clientX / window.innerWidth - 0.5) * 60);
+      mouseY.set((e.clientY / window.innerHeight - 0.5) * 40);
+    };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, [mouseX, mouseY]);
+
+  return (
+    <>
+      <motion.div style={{ x: springX, y: springY }}
+        className="absolute top-10 left-[10%] w-72 h-72 rounded-full bg-[#f9c6d0] blur-[80px] opacity-20 pointer-events-none" />
+      <motion.div style={{ x: useTransform(springX, v => -v * 0.7), y: useTransform(springY, v => -v * 0.7) }}
+        className="absolute top-[20%] right-[8%] w-64 h-64 rounded-full bg-[#c6d4f9] blur-[80px] opacity-20 pointer-events-none" />
+      <motion.div style={{ x: useTransform(springX, v => v * 0.4), y: useTransform(springY, v => v * 0.5) }}
+        className="absolute bottom-0 left-[40%] w-80 h-80 rounded-full bg-[#c6f9d8] blur-[100px] opacity-15 pointer-events-none" />
+    </>
+  );
+}
 
 export default function Home() {
   const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -150]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
-    <div className="flex flex-col gap-40 pb-40">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative px-6 pt-24 pb-32 overflow-hidden min-h-[90vh] flex items-center">
-        <motion.div
-          style={{ opacity }}
-          className="w-full max-w-[1280px] mx-auto text-center relative z-10"
-        >
+    <div className="flex flex-col">
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section ref={heroRef} className="relative min-h-[92vh] flex items-center justify-center overflow-hidden px-5">
+        <HeroOrbs />
+
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="w-full max-w-[800px] mx-auto text-center relative z-10">
+          {/* Trust badge */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+            transition={{ type: "spring", stiffness: 250, damping: 22 }}
+            className="inline-flex items-center gap-2 badge-pill mb-8"
           >
-            <div className="inline-flex items-center gap-2 px-md py-xs rounded-pill bg-canvas-soft border border-mute/30 mb-lg shadow-sm">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="eyebrow-uppercase text-ink">Trusted by 10k+ Creators</span>
-            </div>
+            <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" aria-hidden="true" />
+            <span className="label-caps text-[#45474b]">Trusted by 10k+ Creators — Free Forever</span>
+          </motion.div>
 
-            <h1 className="font-display text-[56px] font-medium mb-lg tracking-tight leading-none text-ink">
-              The Professional <br />
-              <span className="text-primary">YouTube Suite.</span>
-            </h1>
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 80, damping: 18, delay: 0.1 }}
+            style={{ fontFamily: "'Newsreader', serif", fontSize: "clamp(40px, 7vw, 72px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1.08, color: "#1c1b1c" }}
+            className="mb-6"
+          >
+            The Professional<br />
+            <span style={{ color: "#5a5f68", fontStyle: "italic" }}>YouTube Suite.</span>
+          </motion.h1>
 
-            <div className="w-full max-w-[672px] mx-auto mb-12 p-8 bg-canvas-soft/40 backdrop-blur-md border border-mute/20 rounded-2xl shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors duration-500">
-              <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-primary to-primary/10" />
-              <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500" />
-              <p className="text-[20px] leading-[32px] text-body pl-2 relative z-10 text-left">
-                High-fidelity utilities engineered for elite YouTube growth.
-                <span className="text-ink font-semibold block mt-2">Extract, optimize, and dominate the algorithm.</span>
-              </p>
-            </div>
+          {/* Sub */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 80, damping: 18, delay: 0.2 }}
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(15px, 2vw, 19px)", lineHeight: 1.65, color: "#5a5f68" }}
+            className="max-w-[500px] mx-auto mb-10"
+          >
+            Six precision-built tools for extracting thumbnails, tags, metadata, banners, logos, and hashtags — instantly, for free.
+          </motion.p>
 
-            <div className="flex flex-wrap justify-center gap-6 relative z-20">
-              <motion.button
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group relative px-10 py-5 bg-ink text-on-primary rounded-xl font-semibold text-[18px] overflow-hidden shadow-xl hover:shadow-primary/20 transition-all duration-300 border border-ink-soft"
+          {/* CTA Row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 80, damping: 18, delay: 0.3 }}
+            className="flex items-center justify-center gap-4 flex-wrap"
+          >
+            <motion.a
+              href="#tools"
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96, y: 0 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              className="btn-primary ripple-btn !px-8 !py-4 !text-[16px] !rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.14)]"
+            >
+              Explore All Tools
+            </motion.a>
+            <motion.a
+              href="/youtube-thumbnail-downloader"
+              whileHover={{ scale: 1.03, y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              className="btn-secondary !px-8 !py-4 !text-[16px] !rounded-xl"
+            >
+              Try Thumbnail Tool →
+            </motion.a>
+          </motion.div>
+
+          {/* Floating chips */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="flex items-center justify-center gap-3 flex-wrap mt-10"
+          >
+            {["No Login", "No API Key", "100% Free", "GDPR Safe"].map((label, i) => (
+              <motion.span
+                key={label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 + i * 0.08 }}
+                className="chip bg-[rgba(0,0,0,0.04)] text-[#45474b] border border-[#e5e2e2]"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-                <span className="relative flex items-center gap-3">
-                  Explore Tools
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </motion.button>
-            </div>
+                ✓ {label}
+              </motion.span>
+            ))}
           </motion.div>
         </motion.div>
 
-        {/* Parallax Background Elements */}
-        <motion.div style={{ y: y1 }} className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] bg-red-100/30 rounded-full blur-[120px] -z-10" />
-        <motion.div style={{ y: y2 }} className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-100/20 rounded-full blur-[150px] -z-10" />
+        {/* Scroll hint */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          aria-hidden="true"
+        >
+          <span className="label-caps text-[#c6c6cb]">Scroll</span>
+          <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}>
+            <ArrowDown className="w-4 h-4 text-[#c6c6cb]" />
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* Tools Grid with Staggered Animation */}
-      <motion.section
-        id="tools"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="w-full max-w-[1280px] mx-auto px-6 w-full"
-      >
-        <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10">
-          <div className="w-full max-w-[672px]">
-            <motion.h2 variants={itemVariants} className="font-display text-[48px] font-medium mb-sm tracking-tight text-ink">
-              Core <span className="text-primary">Utilities.</span>
-            </motion.h2>
-            <motion.p variants={itemVariants} className="text-body text-[20px] leading-[30px]">
-              Proprietary extraction engines optimized for zero-latency research.
-            </motion.p>
-          </div>
-          <motion.div variants={itemVariants} className="badge-pill border border-mute flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="eyebrow-uppercase"></span>
-          </motion.div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {tools.map((tool, index) => (
-            <motion.div key={index} variants={itemVariants}>
-              <ToolCard {...tool} />
+      {/* ── Stats strip ──────────────────────────────────── */}
+      <section className="py-12 px-5 border-y border-[#e5e2e2] bg-[rgba(255,255,255,0.5)]" style={{ backdropFilter: "blur(8px)" }}>
+        <div className="w-full max-w-[800px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+          {[
+            { value: "<80ms", label: "Extraction Speed" },
+            { value: "6", label: "Precision Tools" },
+            { value: "100%", label: "Tag Accuracy" },
+            { value: "$0", label: "Cost Per Use" },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, type: "spring", stiffness: 100 }}
+              className="text-center"
+            >
+              <div
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 600, letterSpacing: "-0.03em", color: "#1c1b1c", lineHeight: 1 }}
+                className="mb-1"
+              >
+                {stat.value}
+              </div>
+              <div className="label-caps text-[#76777b]">{stat.label}</div>
             </motion.div>
           ))}
         </div>
-      </motion.section>
+      </section>
 
-      {/* Features Showcase */}
-      <section className="bg-canvas-soft py-40 rounded-md mx-6 border border-mute/30 shadow-sm relative">
-        <div className="w-full max-w-[1280px] mx-auto px-8 relative z-10">
-          <div className="text-center mb-3xl">
-            <h2 className="font-display text-[48px] font-medium mb-md tracking-tight text-ink">
-              Engineered <br />
-              <span className="text-primary">Without Compromise.</span>
+      {/* ── Tools Grid ───────────────────────────────────── */}
+      <section id="tools" className="py-24 px-5">
+        <div className="w-full max-w-[1280px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <p className="label-caps text-[#76777b] mb-4">Core utilities</p>
+            <h2
+              style={{ fontFamily: "'Newsreader', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 500, letterSpacing: "-0.025em", color: "#1c1b1c" }}
+              className="mb-4"
+            >
+              Everything you need
             </h2>
-            <p className="text-body text-[20px] leading-[30px]">Why the world&apos;s largest channels use our infrastructure.</p>
-          </div>
+            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "17px", color: "#5a5f68" }}>
+              Proprietary extraction engines — zero latency, zero compromise.
+            </p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-24">
-            <Feature
-              icon={Zap}
-              title="Zero Latency"
-              desc="Our serverless architecture fetches data in <80ms, bypassing traditional rate limits."
-            />
-            <Feature
-              icon={Shield}
-              title="Military Privacy"
-              desc="Zero logs. Zero tracking. Your content strategy is a trade secret; we keep it that way."
-            />
-            <Feature
-              icon={YoutubeIcon}
-              title="Universal Sync"
-              desc="Full native support for Shorts, Premiere, Live Streams, and VOD formats."
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {tools.map((tool, i) => (
+              <ToolCard key={tool.href} {...tool} index={i} />
+            ))}
           </div>
-        </div>
-
-        {/* Animated Background SVG */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-          <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0,50 Q25,0 50,50 T100,50" fill="none" stroke="black" strokeWidth="0.1" />
-          </svg>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="w-full max-w-[896px] mx-auto px-6 w-full">
-        <h2 className="font-display text-[48px] font-medium mb-20 text-center tracking-tight text-ink">
-          Deep <span className="text-primary">Answers.</span>
-        </h2>
-        <div className="grid grid-cols-1 gap-10">
-          <FAQItem
-            question="Is it truly free for enterprise use?"
-            answer="Yes. We leverage advanced client-side processing to eliminate infrastructure costs, allowing us to provide pro-level tools for free indefinitely."
-          />
-          <FAQItem
-            question="How accurate is the tag extraction?"
-            answer="100%. We pull data directly from the video metadata layer, exposing the exact keywords provided to the YouTube algorithm."
-          />
-          <FAQItem
-            question="Can I download 4K thumbnails?"
-            answer="Absolutely. If a creator uploads a 4K asset, our MaxRes extractor will fetch it in its original native resolution."
-          />
+      {/* ── Features ──────────────────────────────────────── */}
+      <section className="py-24 px-5 bg-[rgba(255,255,255,0.5)]" style={{ backdropFilter: "blur(8px)", borderTop: "1px solid #e5e2e2", borderBottom: "1px solid #e5e2e2" }}>
+        <div className="w-full max-w-[1100px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <p className="label-caps text-[#76777b] mb-4">Why YTToolkit</p>
+            <h2
+              style={{ fontFamily: "'Newsreader', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 500, letterSpacing: "-0.025em", color: "#1c1b1c" }}
+            >
+              Engineered without<br />
+              <span style={{ fontStyle: "italic", color: "#5a5f68" }}>compromise.</span>
+            </h2>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {features.map((f, i) => (
+              <FeatureCard key={f.title} {...f} index={i} />
+            ))}
+          </div>
         </div>
       </section>
-    </div>
-  );
-}
 
-function Feature({ icon: Icon, title, desc }: any) {
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className="flex flex-col items-center text-center group cursor-pointer"
-    >
-      <div className="p-xl rounded-md bg-canvas border border-mute/30 mb-lg group-hover:bg-primary group-hover:border-primary transition-all duration-300 shadow-sm">
-        <Icon className="w-12 h-12 text-primary group-hover:text-on-primary transition-colors duration-300" />
-      </div>
-      <h3 className="font-display text-[32px] font-medium mb-sm text-ink group-hover:text-primary transition-colors">{title}</h3>
-      <p className="text-body text-[18px] leading-[27px] px-4">{desc}</p>
-    </motion.div>
-  );
-}
-
-function FAQItem({ question, answer }: any) {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="bg-canvas p-xl rounded-md border border-mute/30 hover:border-primary/50 transition-all duration-300 shadow-sm cursor-pointer group"
-    >
-      <h3 className="font-display text-[24px] font-medium mb-sm text-ink flex justify-between items-center tracking-tight group-hover:text-primary transition-colors">
-        {question}
-        <div className="w-10 h-10 rounded-full bg-canvas-soft flex items-center justify-center group-hover:bg-primary group-hover:rotate-45 transition-all duration-300">
-          <Zap className="w-4 h-4 text-mute group-hover:text-on-primary" />
+      {/* ── FAQ ──────────────────────────────────────────── */}
+      <section className="py-24 px-5">
+        <div className="w-full max-w-[700px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <p className="label-caps text-[#76777b] mb-4">FAQ</p>
+            <h2
+              style={{ fontFamily: "'Newsreader', serif", fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 500, letterSpacing: "-0.025em", color: "#1c1b1c" }}
+            >
+              Got questions?
+            </h2>
+          </motion.div>
+          <div className="flex flex-col gap-3">
+            {faqs.map((faq, i) => (
+              <FAQItem key={i} q={faq.q} a={faq.a} index={i} />
+            ))}
+          </div>
         </div>
-      </h3>
-      <p className="text-body text-[18px] leading-[27px]">{answer}</p>
-    </motion.div>
-  );
-}
+      </section>
 
-function StatGrid() {
-  const stats = [
-    { label: "Extraction Speed", value: "<80ms" },
-    { label: "Infrastructure", value: "Edge-Ready" },
-    { label: "Native API", value: "v3.2" },
-    { label: "Cost Per Call", value: "$0.00" },
-  ];
-
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-32 max-w-6xl mx-auto">
-      {stats.map((stat, i) => (
+      {/* ── Final CTA ─────────────────────────────────────── */}
+      <section className="py-24 px-5">
         <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.1, type: "spring" }}
-          className="bg-white p-10 rounded-[40px] border border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center text-center"
+          initial={{ opacity: 0, scale: 0.96 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 80, damping: 20 }}
+          className="w-full max-w-[700px] mx-auto prismatic-card p-12 text-center relative overflow-hidden"
         >
-          <div className="text-4xl font-black text-slate-900 mb-2 tracking-tighter">{stat.value}</div>
-          <div className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-black">{stat.label}</div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#f9c6d0]/10 via-transparent to-[#c6d4f9]/10 pointer-events-none" />
+          <p className="label-caps text-[#76777b] mb-4 relative z-10">Start now — free</p>
+          <h2
+            style={{ fontFamily: "'Newsreader', serif", fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 500, letterSpacing: "-0.025em", color: "#1c1b1c" }}
+            className="mb-4 relative z-10"
+          >
+            Ready to dominate<br />the algorithm?
+          </h2>
+          <p
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "16px", color: "#5a5f68" }}
+            className="mb-8 relative z-10"
+          >
+            Six powerful tools. No account. No credit card. Just results.
+          </p>
+          <motion.a
+            href="#tools"
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            className="btn-primary ripple-btn !px-10 !py-4 !text-[16px] !rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.14)] relative z-10 inline-flex"
+          >
+            Get Started Free
+          </motion.a>
         </motion.div>
-      ))}
+      </section>
     </div>
   );
 }
