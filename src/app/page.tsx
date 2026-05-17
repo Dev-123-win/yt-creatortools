@@ -120,19 +120,27 @@ export default function Home() {
               <span className="text-primary">YouTube Suite.</span>
             </h1>
             
-            <p className="max-w-2xl mx-auto text-[20px] leading-[30px] text-body mb-xl">
-              High-fidelity utilities engineered for elite YouTube growth. 
-              Extract, optimize, and dominate the algorithm.
-            </p>
+            <div className="max-w-2xl mx-auto mb-12 p-8 bg-canvas-soft/40 backdrop-blur-md border border-mute/20 rounded-2xl shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors duration-500">
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-primary to-primary/10" />
+              <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500" />
+              <p className="text-[20px] leading-[32px] text-body pl-2 relative z-10 text-left">
+                High-fidelity utilities engineered for elite YouTube growth. 
+                <span className="text-ink font-semibold block mt-2">Extract, optimize, and dominate the algorithm.</span>
+              </p>
+            </div>
             
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="flex flex-wrap justify-center gap-6 relative z-20">
               <motion.button 
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' })}
-                className="btn-primary"
+                className="group relative px-10 py-5 bg-ink text-on-primary rounded-xl font-semibold text-[18px] overflow-hidden shadow-xl hover:shadow-primary/20 transition-all duration-300 border border-ink-soft"
               >
-                Explore Tools
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+                <span className="relative flex items-center gap-3">
+                  Explore Tools
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
               </motion.button>
             </div>
           </motion.div>

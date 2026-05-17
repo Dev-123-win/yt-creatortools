@@ -41,9 +41,13 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
         <h1 className="font-display text-[48px] md:text-[56px] font-medium mb-md text-ink leading-tight">
           {title}
         </h1>
-        <p className="text-body max-w-2xl mx-auto text-[20px] leading-[30px]">
-          {description}
-        </p>
+        <div className="max-w-2xl mx-auto mb-6 p-6 bg-canvas-soft/40 backdrop-blur-md border border-mute/20 rounded-2xl shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors duration-500">
+          <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-primary to-primary/10" />
+          <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500" />
+          <p className="text-[20px] leading-[32px] text-body pl-2 relative z-10 text-left">
+            {description}
+          </p>
+        </div>
       </motion.div>
 
       {/* Main Tool Area */}
