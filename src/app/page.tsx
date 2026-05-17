@@ -188,7 +188,7 @@ function FeatureCard({ icon: Icon, title, desc, color, index }: any) {
 }
 
 /* ── Mouse-tracking hero ─────────────────────────────── */
-function HeroOrbs() {
+function HeroOrbs({ scrollYProgress }: { scrollYProgress: any }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 40, damping: 20 });
@@ -203,14 +203,19 @@ function HeroOrbs() {
     return () => window.removeEventListener("mousemove", move);
   }, [mouseX, mouseY]);
 
+  // Transform scroll progress into beautiful blur values dynamically
+  const blurVal1 = useTransform(scrollYProgress, [0, 0.8], ["blur(80px)", "blur(180px)"]);
+  const blurVal2 = useTransform(scrollYProgress, [0, 0.8], ["blur(80px)", "blur(180px)"]);
+  const blurVal3 = useTransform(scrollYProgress, [0, 0.8], ["blur(100px)", "blur(200px)"]);
+
   return (
     <>
-      <motion.div style={{ x: springX, y: springY }}
-        className="absolute top-10 left-[10%] w-72 h-72 rounded-full bg-[#f9c6d0] blur-[80px] opacity-20 pointer-events-none" />
-      <motion.div style={{ x: useTransform(springX, v => -v * 0.7), y: useTransform(springY, v => -v * 0.7) }}
-        className="absolute top-[20%] right-[8%] w-64 h-64 rounded-full bg-[#c6d4f9] blur-[80px] opacity-20 pointer-events-none" />
-      <motion.div style={{ x: useTransform(springX, v => v * 0.4), y: useTransform(springY, v => v * 0.5) }}
-        className="absolute bottom-0 left-[40%] w-80 h-80 rounded-full bg-[#c6f9d8] blur-[100px] opacity-15 pointer-events-none" />
+      <motion.div style={{ x: springX, y: springY, filter: blurVal1 }}
+        className="absolute top-10 left-[10%] w-72 h-72 rounded-full bg-[#f9c6d0] opacity-20 pointer-events-none" />
+      <motion.div style={{ x: useTransform(springX, v => -v * 0.7), y: useTransform(springY, v => -v * 0.7), filter: blurVal2 }}
+        className="absolute top-[20%] right-[8%] w-64 h-64 rounded-full bg-[#c6d4f9] opacity-20 pointer-events-none" />
+      <motion.div style={{ x: useTransform(springX, v => v * 0.4), y: useTransform(springY, v => v * 0.5), filter: blurVal3 }}
+        className="absolute bottom-0 left-[40%] w-80 h-80 rounded-full bg-[#c6f9d8] opacity-15 pointer-events-none" />
     </>
   );
 }
@@ -219,15 +224,23 @@ export default function Home() {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  
+  // Dynamic backdrop blur that applies to all layout assets behind the hero on scroll
+  const backdropBlur = useTransform(scrollYProgress, [0, 0.8], ["blur(0px)", "blur(28px)"]);
 
   return (
     <div className="flex flex-col">
       {/* ── Hero ─────────────────────────────────────────── */}
       <section ref={heroRef} className="relative min-h-[92vh] flex items-center justify-center overflow-hidden px-5">
-        <HeroOrbs />
+        <HeroOrbs scrollYProgress={scrollYProgress} />
+        
+        {/* Dynamic backdrop-blur sheet that gradually blurs background layers as user scrolls */}
+        <motion.div 
+          style={{ backdropFilter: backdropBlur, WebkitBackdropFilter: backdropBlur }}
+          className="absolute inset-0 pointer-events-none z-[5]"
+        />
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="w-full max-w-[800px] mx-auto text-center relative z-10">
+        <motion.div style={{ y: heroY }} className="w-full max-w-[800px] mx-auto text-center relative z-10">
           {/* Trust badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
