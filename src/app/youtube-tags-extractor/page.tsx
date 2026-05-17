@@ -62,7 +62,7 @@ export default function TagsExtractor() {
         <div className="space-y-6">
           <section>
             <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">The Power of Video Tags</h3>
-            <p className="text-body text-body-lg">
+            <p className="text-body text-[20px] leading-[30px]">
               While tags are no longer the primary ranking factor, they provide critical context to the YouTube algorithm 
               about the topics and niches your video belongs to. Analyzing top-performing competitors allows you to 
               bridge the gap in your own SEO strategy.

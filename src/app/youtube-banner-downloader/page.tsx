@@ -51,7 +51,7 @@ export default function BannerDownloader() {
         <div className="space-y-8">
           <section>
             <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">Branding Research</h3>
-            <p className="text-body text-body-lg">
+            <p className="text-body text-[20px] leading-[30px]">
               Analyze the visual identity of top-tier channels. Our downloader fetches the original 2560x1440 
               uploaded file, ensuring you see every detail of their branding strategy.
             </p>

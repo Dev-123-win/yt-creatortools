@@ -51,7 +51,7 @@ export default function LogoDownloader() {
         <div className="space-y-8">
           <section>
             <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">Avatar Extraction</h3>
-            <p className="text-body text-body-lg">
+            <p className="text-body text-[20px] leading-[30px]">
               Our extractor pulls the original source profile picture in its maximum size (800x800 or 900x900), 
               ensuring you get the cleanest version of a channel&apos;s avatar without compression.
             </p>

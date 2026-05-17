@@ -61,7 +61,7 @@ export default function MetadataExtractor() {
         <div className="space-y-8">
           <section>
             <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">Unified SEO Research</h3>
-            <p className="text-body text-body-lg">
+            <p className="text-body text-[20px] leading-[30px]">
               Analyzing both the title and description together provides a complete picture of a competitor&apos;s 
               SEO strategy. This tool helps you identify keyword placement patterns across both metadata layers.
             </p>

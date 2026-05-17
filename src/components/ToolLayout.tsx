@@ -41,7 +41,7 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
         <h1 className="font-display text-[48px] md:text-[56px] font-medium mb-md text-ink leading-tight">
           {title}
         </h1>
-        <p className="text-body max-w-2xl mx-auto text-body-lg">
+        <p className="text-body max-w-2xl mx-auto text-[20px] leading-[30px]">
           {description}
         </p>
       </motion.div>

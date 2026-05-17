@@ -64,7 +64,7 @@ export default function HashtagExtractor() {
         <div className="space-y-8">
           <section>
             <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">Algorithm Discovery</h3>
-            <p className="text-body text-body-lg">
+            <p className="text-body text-[20px] leading-[30px]">
               Hashtags act as high-level category markers for the YouTube algorithm. By extracting hashtags 
               from top-performing videos in your niche, you can ensure your content is indexed alongside 
               the right audience segments.

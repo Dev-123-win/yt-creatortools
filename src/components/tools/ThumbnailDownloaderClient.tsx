@@ -52,7 +52,7 @@ export default function ThumbnailDownloaderClient() {
         <div className="space-y-12">
           <section>
             <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">High-Fidelity Extraction</h3>
-            <p className="text-body text-body-lg">
+            <p className="text-body text-[20px] leading-[30px]">
               We pull directly from the YouTube edge network, bypassing standard compression to deliver the 
               original source files provided by the creator. Perfect for designers and metadata architects.
             </p>
