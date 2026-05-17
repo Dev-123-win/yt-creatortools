@@ -50,8 +50,8 @@ export default function LogoDownloader() {
       seoContent={
         <div className="space-y-8">
           <section>
-            <h3 className="text-2xl font-black mb-6 tracking-tighter">Avatar Extraction</h3>
-            <p className="text-lg text-slate-500 font-medium leading-relaxed">
+            <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">Avatar Extraction</h3>
+            <p className="text-body text-body-lg">
               Our extractor pulls the original source profile picture in its maximum size (800x800 or 900x900), 
               ensuring you get the cleanest version of a channel&apos;s avatar without compression.
             </p>
@@ -61,13 +61,13 @@ export default function LogoDownloader() {
     >
       <div className="flex flex-col gap-16">
         {/* Input Engine */}
-        <div className="bg-white p-3 rounded-[40px] border border-slate-200 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col md:flex-row gap-3">
-          <div className="flex-grow flex items-center px-8 gap-4">
+        <div className="bg-canvas p-sm rounded-md border border-mute flex flex-col md:flex-row gap-4 shadow-sm">
+          <div className="flex-grow flex items-center px-4 gap-4">
             <Sparkles className="w-5 h-5 text-primary opacity-30" />
             <input
               type="text"
               placeholder="Paste Channel URL or Video URL..."
-              className="w-full py-4 outline-none text-slate-900 font-black text-lg placeholder:text-slate-200 bg-transparent"
+              className="w-full py-4 outline-none text-ink font-medium text-[18px] bg-transparent placeholder-mute"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
@@ -78,7 +78,7 @@ export default function LogoDownloader() {
             whileTap={{ scale: 0.95 }}
             onClick={handleExtract}
             disabled={loading}
-            className="bg-primary text-white px-10 py-5 rounded-[28px] font-black uppercase tracking-widest text-xs shadow-xl shadow-red-100 disabled:opacity-50"
+            className="btn-primary"
           >
             {loading ? "Please wait..." : "Get Logo"}
           </motion.button>
@@ -105,18 +105,18 @@ export default function LogoDownloader() {
               animate={{ opacity: 1, scale: 1 }}
               className="max-w-md mx-auto w-full"
             >
-              <div className="bg-white p-12 rounded-[56px] border border-slate-100 shadow-[0_30px_100px_rgba(0,0,0,0.04)] text-center">
-                <div className="relative w-48 h-48 mx-auto mb-10 group">
+              <div className="bg-canvas-soft p-xl rounded-md border border-mute/50 shadow-sm text-center">
+                <div className="relative w-48 h-48 mx-auto mb-xl group">
                   <div className="absolute inset-0 bg-primary/10 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                   <img 
                     src={data.logoUrl} 
                     alt={data.channelName}
-                    className="w-full h-full rounded-full object-cover border-8 border-slate-50 relative z-10 shadow-2xl transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full rounded-full object-cover border border-mute/30 relative z-10 shadow-md transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
                 
-                <h3 className="text-3xl font-black text-slate-900 tracking-tighter mb-2">{data.channelName}</h3>
-                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] mb-12">Original High-Res Avatar</p>
+                <h3 className="font-display text-[32px] font-medium text-ink tracking-tight mb-sm">{data.channelName}</h3>
+                <p className="eyebrow-uppercase text-mute mb-xl">Original High-Res Avatar</p>
                 
                 <motion.a 
                   whileHover={{ scale: 1.05 }}
@@ -125,7 +125,7 @@ export default function LogoDownloader() {
                   download={`${data.channelName}-logo.jpg`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-4 bg-slate-900 text-white py-6 rounded-[28px] font-black text-xs uppercase tracking-widest shadow-2xl"
+                  className="btn-secondary w-full inline-flex items-center justify-center gap-4"
                 >
                   <Download className="w-5 h-5" />
                   Download Full Size

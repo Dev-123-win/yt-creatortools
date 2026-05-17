@@ -110,34 +110,34 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 25 }}
           >
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white border border-slate-100 mb-12 shadow-[0_10px_30px_rgba(0,0,0,0.03)] animate-float">
+            <div className="inline-flex items-center gap-2 px-md py-xs rounded-pill bg-canvas-soft border border-mute/30 mb-lg shadow-sm">
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Trusted by 10k+ Creators</span>
+              <span className="eyebrow-uppercase text-ink">Trusted by 10k+ Creators</span>
             </div>
             
-            <h1 className="text-[12vw] md:text-[10vw] font-black mb-12 tracking-tighter leading-[0.85] text-slate-900">
+            <h1 className="font-display text-[56px] font-medium mb-lg tracking-tight leading-none text-ink">
               The Professional <br />
-              <span className="text-gradient-primary">YouTube Suite.</span>
+              <span className="text-primary">YouTube Suite.</span>
             </h1>
             
-            <p className="max-w-2xl mx-auto text-lg md:text-2xl text-slate-500 mb-16 leading-relaxed font-medium">
+            <p className="max-w-2xl mx-auto text-body-lg text-body mb-xl leading-relaxed">
               High-fidelity utilities engineered for elite YouTube growth. 
               Extract, optimize, and dominate the algorithm.
             </p>
             
             <div className="flex flex-wrap justify-center gap-6">
               <motion.button 
-                whileHover={{ scale: 1.05, y: -5 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-12 py-6 rounded-[28px] bg-primary text-white font-black uppercase tracking-widest text-xs hover:bg-primary-600 transition-all shadow-[0_25px_50px_-12px_rgba(255,0,0,0.3)]"
+                className="btn-primary"
               >
                 Explore Tools
               </motion.button>
-              <motion.div whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }}>
+              <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
                 <Link 
                   href="/#tools"
-                  className="px-12 py-6 rounded-[28px] bg-white text-slate-900 font-black border border-slate-200 hover:bg-slate-50 transition-all shadow-sm flex items-center gap-3 text-xs uppercase tracking-widest"
+                  className="btn-tertiary flex items-center gap-3"
                 >
                   Explore Tools
                   <ArrowRight className="w-4 h-4 text-primary" />
@@ -163,16 +163,16 @@ export default function Home() {
       >
         <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10">
           <div className="max-w-2xl">
-            <motion.h2 variants={itemVariants} className="text-5xl md:text-7xl font-black mb-8 tracking-tighter text-slate-900">
+            <motion.h2 variants={itemVariants} className="font-display text-[48px] font-medium mb-sm tracking-tight text-ink">
               Core <span className="text-primary">Utilities.</span>
             </motion.h2>
-            <motion.p variants={itemVariants} className="text-slate-500 text-xl font-medium leading-relaxed">
+            <motion.p variants={itemVariants} className="text-body text-body-lg">
               Proprietary extraction engines optimized for zero-latency research.
             </motion.p>
           </div>
-          <motion.div variants={itemVariants} className="bg-slate-50 px-10 py-5 rounded-[32px] text-xs font-black text-slate-400 flex items-center gap-4 border border-slate-100">
-            <div className="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] animate-pulse" />
-            SYSTEM STATUS: OPTIMIZED
+          <motion.div variants={itemVariants} className="badge-pill border border-mute flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="eyebrow-uppercase">SYSTEM STATUS: OPTIMIZED</span>
           </motion.div>
         </div>
 
@@ -186,14 +186,14 @@ export default function Home() {
       </motion.section>
 
       {/* Features Showcase */}
-      <section className="bg-slate-50 py-40 rounded-[80px] mx-6 border border-slate-100 shadow-inner overflow-hidden relative">
+      <section className="bg-canvas-soft py-40 rounded-md mx-6 border border-mute/30 shadow-sm relative">
         <div className="max-w-7xl mx-auto px-8 relative z-10">
-          <div className="text-center mb-32">
-            <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter text-slate-900">
+          <div className="text-center mb-3xl">
+            <h2 className="font-display text-[48px] font-medium mb-md tracking-tight text-ink">
               Engineered <br />
               <span className="text-primary">Without Compromise.</span>
             </h2>
-            <p className="text-slate-500 text-xl font-medium">Why the world&apos;s largest channels use our infrastructure.</p>
+            <p className="text-body text-body-lg">Why the world&apos;s largest channels use our infrastructure.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-24">
@@ -225,7 +225,7 @@ export default function Home() {
 
       {/* FAQ Section */}
       <section className="max-w-4xl mx-auto px-6 w-full">
-        <h2 className="text-5xl md:text-7xl font-black mb-20 text-center tracking-tighter text-slate-900">
+        <h2 className="font-display text-[48px] font-medium mb-20 text-center tracking-tight text-ink">
           Deep <span className="text-primary">Answers.</span>
         </h2>
         <div className="grid grid-cols-1 gap-10">
@@ -250,14 +250,14 @@ export default function Home() {
 function Feature({ icon: Icon, title, desc }: any) {
   return (
     <motion.div 
-      whileHover={{ y: -15 }}
+      whileHover={{ y: -5 }}
       className="flex flex-col items-center text-center group cursor-pointer"
     >
-      <div className="p-10 rounded-[40px] bg-white border border-slate-100 mb-10 group-hover:bg-primary group-hover:border-primary transition-all duration-700 shadow-[0_15px_40px_rgba(0,0,0,0.02)] group-hover:shadow-[0_25px_60px_rgba(255,0,0,0.2)]">
-        <Icon className="w-12 h-12 text-primary group-hover:text-white transition-all duration-500" />
+      <div className="p-xl rounded-md bg-canvas border border-mute/30 mb-lg group-hover:bg-primary group-hover:border-primary transition-all duration-300 shadow-sm">
+        <Icon className="w-12 h-12 text-primary group-hover:text-on-primary transition-colors duration-300" />
       </div>
-      <h3 className="text-3xl font-black mb-6 text-slate-900 tracking-tight">{title}</h3>
-      <p className="text-slate-500 leading-relaxed text-lg font-medium px-4">{desc}</p>
+      <h3 className="font-display text-[32px] font-medium mb-sm text-ink group-hover:text-primary transition-colors">{title}</h3>
+      <p className="text-body text-body-md px-4">{desc}</p>
     </motion.div>
   );
 }
@@ -266,15 +266,15 @@ function FAQItem({ question, answer }: any) {
   return (
     <motion.div 
       whileHover={{ scale: 1.02 }}
-      className="bg-white p-12 rounded-[56px] border border-slate-100 hover:border-primary/20 transition-all duration-700 shadow-[0_20px_60px_rgba(0,0,0,0.02)] hover:shadow-[0_30px_100px_rgba(0,0,0,0.05)] cursor-pointer group"
+      className="bg-canvas p-xl rounded-md border border-mute/30 hover:border-primary/50 transition-all duration-300 shadow-sm cursor-pointer group"
     >
-      <h3 className="text-2xl font-black mb-6 text-slate-900 flex justify-between items-center tracking-tight">
+      <h3 className="font-display text-[24px] font-medium mb-sm text-ink flex justify-between items-center tracking-tight group-hover:text-primary transition-colors">
         {question}
-        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary group-hover:rotate-45 transition-all duration-500">
-           <Zap className="w-4 h-4 text-slate-300 group-hover:text-white" />
+        <div className="w-10 h-10 rounded-full bg-canvas-soft flex items-center justify-center group-hover:bg-primary group-hover:rotate-45 transition-all duration-300">
+           <Zap className="w-4 h-4 text-mute group-hover:text-on-primary" />
         </div>
       </h3>
-      <p className="text-slate-500 text-lg leading-relaxed font-medium">{answer}</p>
+      <p className="text-body text-body-md">{answer}</p>
     </motion.div>
   );
 }

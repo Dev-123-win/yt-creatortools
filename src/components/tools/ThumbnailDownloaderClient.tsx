@@ -51,24 +51,24 @@ export default function ThumbnailDownloaderClient() {
       seoContent={
         <div className="space-y-12">
           <section>
-            <h3 className="text-3xl font-black mb-8 tracking-tighter">High-Fidelity Extraction</h3>
-            <p className="text-lg text-slate-500 leading-relaxed font-medium">
+            <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">High-Fidelity Extraction</h3>
+            <p className="text-body text-body-lg">
               We pull directly from the YouTube edge network, bypassing standard compression to deliver the 
               original source files provided by the creator. Perfect for designers and metadata architects.
             </p>
           </section>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="p-10 bg-slate-50 rounded-[48px] border border-slate-100">
-              <h4 className="font-black text-slate-900 mb-6 uppercase tracking-widest text-xs">Supported Formats</h4>
-              <ul className="space-y-4 text-slate-500 font-bold text-sm">
+            <div className="p-xl bg-canvas border border-mute/30 rounded-md">
+              <h4 className="text-on-primary mb-md eyebrow-uppercase">Supported Formats</h4>
+              <ul className="space-y-sm text-body-sm text-mute">
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> YouTube Originals</li>
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> YouTube Shorts (Vertical)</li>
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> Live Stream VODs</li>
               </ul>
             </div>
-            <div className="p-10 bg-slate-50 rounded-[48px] border border-slate-100">
-              <h4 className="font-black text-slate-900 mb-6 uppercase tracking-widest text-xs">Quality Layers</h4>
-              <ul className="space-y-4 text-slate-500 font-bold text-sm">
+            <div className="p-xl bg-canvas border border-mute/30 rounded-md">
+              <h4 className="text-on-primary mb-md eyebrow-uppercase">Quality Layers</h4>
+              <ul className="space-y-sm text-body-sm text-mute">
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> 3840x2160 (Native)</li>
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> 1920x1080 (HQ)</li>
                 <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-primary rounded-full" /> 1280x720 (Standard)</li>
@@ -80,13 +80,13 @@ export default function ThumbnailDownloaderClient() {
     >
       <div className="flex flex-col gap-16">
         {/* Input Engine */}
-        <div className="bg-white p-4 rounded-[48px] border border-slate-200 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.06)] flex flex-col md:flex-row gap-4">
-          <div className="flex-grow flex items-center px-10 gap-6">
+        <div className="bg-canvas p-sm rounded-md border border-mute flex flex-col md:flex-row gap-4 shadow-sm">
+          <div className="flex-grow flex items-center px-4 gap-6">
             <Sparkles className="w-6 h-6 text-primary animate-pulse" />
             <input
               type="text"
               placeholder="Paste Video or Shorts URL here..."
-              className="w-full py-6 outline-none text-slate-900 font-black text-lg placeholder:text-slate-200 bg-transparent"
+              className="w-full py-4 outline-none text-ink font-medium text-[18px] bg-transparent placeholder-mute"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
@@ -97,7 +97,7 @@ export default function ThumbnailDownloaderClient() {
             whileTap={{ scale: 0.95 }}
             onClick={handleExtract}
             disabled={loading}
-            className="bg-primary text-white px-14 py-6 rounded-[32px] font-black uppercase tracking-widest text-xs hover:bg-primary-600 transition-all shadow-xl shadow-red-100 flex items-center justify-center gap-3 disabled:opacity-50"
+            className="btn-primary"
           >
             {loading ? "Please wait..." : "Download Now"}
           </motion.button>
@@ -122,10 +122,10 @@ export default function ThumbnailDownloaderClient() {
           {loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-white p-8 rounded-[56px] border border-slate-100 shadow-sm animate-pulse">
-                  <div className="aspect-video w-full rounded-[32px] bg-slate-100 mb-8" />
-                  <div className="h-6 w-1/2 bg-slate-100 rounded-full mb-4" />
-                  <div className="h-4 w-1/4 bg-slate-50 rounded-full" />
+                <div key={i} className="bg-canvas-soft p-xl rounded-md border border-mute/30 shadow-sm animate-pulse">
+                  <div className="aspect-video w-full rounded-md bg-canvas mb-lg" />
+                  <div className="h-6 w-1/2 bg-canvas rounded-full mb-4" />
+                  <div className="h-4 w-1/4 bg-canvas rounded-full" />
                 </div>
               ))}
             </div>
@@ -146,32 +146,32 @@ export default function ThumbnailDownloaderClient() {
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
-                  className="bg-white p-8 rounded-[56px] border border-slate-100 shadow-[0_20px_60px_rgba(0,0,0,0.03)] group hover:border-primary/10 transition-all duration-700"
+                  className="bg-canvas-soft p-xl rounded-md border border-mute/50 shadow-sm group hover:border-primary/50 transition-all duration-300"
                 >
-                  <div className="relative aspect-video rounded-[36px] overflow-hidden mb-10 border border-slate-50 group-hover:shadow-2xl transition-all duration-700">
+                  <div className="relative aspect-video rounded-md overflow-hidden mb-xl border border-mute/30 group-hover:shadow-md transition-all duration-300">
                     <img 
                       src={quality.url} 
                       alt={quality.label}
-                      className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
                       onError={(e) => {
                         (e.target as HTMLImageElement).parentElement!.style.display = 'none';
                       }}
                     />
-                    <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-all duration-700" />
+                    <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-all duration-300" />
                   </div>
                   
                   <div className="flex justify-between items-center px-4">
                     <div>
-                      <h4 className="font-black text-slate-900 text-xl mb-2 tracking-tighter">{quality.label}</h4>
-                      <p className="text-[10px] text-slate-300 font-black uppercase tracking-[0.2em]">{quality.name}.jpg</p>
+                      <h4 className="font-display text-[24px] font-medium text-ink mb-2 tracking-tight">{quality.label}</h4>
+                      <p className="eyebrow-uppercase text-mute">{quality.name}.jpg</p>
                     </div>
                     <div className="flex gap-4">
                       <motion.button 
                         whileTap={{ scale: 0.8 }}
                         onClick={() => copyToClipboard(quality.url)}
-                        className="p-5 bg-slate-50 text-slate-400 rounded-[24px] hover:text-primary transition-all shadow-inner"
+                        className="p-sm bg-canvas text-body rounded-md border border-mute/50 hover:text-primary transition-all shadow-sm"
                       >
-                        {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
+                        {copied ? <Check className="w-5 h-5 text-primary" /> : <Copy className="w-5 h-5" />}
                       </motion.button>
                       <motion.a
                         whileHover={{ scale: 1.05 }}
@@ -180,7 +180,7 @@ export default function ThumbnailDownloaderClient() {
                         download={`thumbnail-${quality.name}.jpg`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-5 bg-primary text-white rounded-[24px] hover:bg-primary-600 transition-all shadow-xl shadow-red-100"
+                        className="btn-primary !p-sm flex items-center justify-center"
                       >
                         <Download className="w-5 h-5" />
                       </motion.a>

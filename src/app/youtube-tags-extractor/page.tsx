@@ -61,8 +61,8 @@ export default function TagsExtractor() {
       seoContent={
         <div className="space-y-6">
           <section>
-            <h3 className="text-2xl font-black mb-4">The Power of Video Tags</h3>
-            <p>
+            <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">The Power of Video Tags</h3>
+            <p className="text-body text-body-lg">
               While tags are no longer the primary ranking factor, they provide critical context to the YouTube algorithm 
               about the topics and niches your video belongs to. Analyzing top-performing competitors allows you to 
               bridge the gap in your own SEO strategy.
@@ -72,13 +72,13 @@ export default function TagsExtractor() {
       }
     >
       <div className="flex flex-col gap-12">
-        <div className="bg-white p-3 rounded-[32px] border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.04)] flex flex-col md:flex-row gap-3">
-          <div className="flex-grow flex items-center px-6 gap-4">
+        <div className="bg-canvas p-sm rounded-md border border-mute flex flex-col md:flex-row gap-3 shadow-sm">
+          <div className="flex-grow flex items-center px-4 gap-4">
             <Sparkles className="w-5 h-5 text-primary opacity-30" />
             <input
               type="text"
               placeholder="Paste Video or Shorts URL here..."
-              className="w-full py-4 outline-none text-slate-900 font-semibold placeholder:text-slate-300 bg-transparent"
+              className="w-full py-4 outline-none text-ink font-medium text-[18px] bg-transparent placeholder-mute"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
@@ -87,7 +87,7 @@ export default function TagsExtractor() {
           <button
             onClick={handleExtract}
             disabled={loading}
-            className="bg-primary text-white px-10 py-5 rounded-[24px] font-black hover:bg-red-600 transition-all shadow-lg active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="btn-primary flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Get Tags"}
           </button>
@@ -114,12 +114,12 @@ export default function TagsExtractor() {
               className="flex flex-col gap-8"
             >
               <div className="flex justify-between items-center px-4">
-                <h3 className="text-2xl font-black text-slate-900 tracking-tight">Extracted Keywords ({tags.length})</h3>
+                <h3 className="font-display text-[24px] font-medium text-ink tracking-tight">Extracted Keywords ({tags.length})</h3>
                 <button
                   onClick={copyAll}
-                  className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold shadow-lg"
+                  className="btn-secondary flex items-center gap-2"
                 >
-                  {allCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {allCopied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
                   {allCopied ? "Copied All" : "Copy All Tags"}
                 </button>
               </div>
@@ -132,11 +132,11 @@ export default function TagsExtractor() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.02 }}
                     onClick={() => copyTag(tag, index)}
-                    className="bg-white px-6 py-4 rounded-[20px] border border-slate-100 hover:border-primary/30 cursor-pointer transition-all flex items-center gap-4 group shadow-sm hover:shadow-md"
+                    className="bg-canvas px-lg py-sm rounded-md border border-mute/50 hover:border-primary/50 cursor-pointer transition-all flex items-center gap-4 group shadow-sm"
                   >
-                    <span className="text-[15px] font-bold text-slate-700 group-hover:text-primary transition-colors">{tag}</span>
-                    <div className="text-slate-200 group-hover:text-primary">
-                      {copiedIndex === index ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    <span className="text-body-md font-medium text-ink group-hover:text-primary transition-colors">{tag}</span>
+                    <div className="text-mute group-hover:text-primary transition-colors">
+                      {copiedIndex === index ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
                     </div>
                   </motion.div>
                 ))}

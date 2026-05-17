@@ -42,20 +42,20 @@ export function Navbar() {
         )}
       >
         <div className={cn(
-          "max-w-7xl mx-auto rounded-[32px] transition-all duration-700 px-8 py-3 flex items-center justify-between border",
+          "max-w-7xl mx-auto rounded-md transition-all duration-700 px-xl py-md flex items-center justify-between border",
           isScrolled 
-            ? "bg-white/80 backdrop-blur-2xl border-slate-200/50 shadow-[0_20px_50px_rgba(0,0,0,0.03)]" 
+            ? "bg-canvas/90 backdrop-blur-2xl border-mute shadow-sm" 
             : "bg-transparent border-transparent"
         )}>
           <Link href="/" className="flex items-center gap-3 group">
             <motion.div 
               whileHover={{ rotate: 15, scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="bg-primary p-2.5 rounded-2xl shadow-[0_8px_20px_rgba(255,0,0,0.2)] flex items-center justify-center"
+              className="bg-primary p-2.5 rounded-md shadow-sm flex items-center justify-center"
             >
-              <YoutubeIcon className="w-5 h-5 text-white" fill="currentColor" />
+              <YoutubeIcon className="w-5 h-5 text-on-primary" fill="currentColor" />
             </motion.div>
-            <span className="font-black text-2xl tracking-tighter text-slate-900 group-hover:tracking-normal transition-all duration-500">
+            <span className="font-display font-medium text-[24px] tracking-tight text-ink">
               YT<span className="text-primary">Toolkit</span>
             </span>
           </Link>
@@ -66,20 +66,15 @@ export function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-[13px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-all relative group"
+                className="text-body-sm font-medium text-body hover:text-ink transition-colors relative group"
               >
                 {link.name}
-                <motion.span 
-                  className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary"
-                  whileHover={{ width: "100%" }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                />
               </Link>
             ))}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/#tools"
-                className="bg-slate-900 text-white px-8 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2 shadow-[0_10px_25px_rgba(0,0,0,0.1)]"
+                className="btn-secondary flex items-center gap-2"
               >
                 Get Started
                 <ChevronRight className="w-4 h-4 text-primary" />
@@ -90,7 +85,7 @@ export function Navbar() {
           {/* Mobile Toggle */}
           <motion.button
             whileTap={{ scale: 0.8 }}
-            className="md:hidden p-3 bg-slate-50 rounded-2xl text-slate-600 hover:text-slate-900"
+            className="md:hidden p-3 bg-canvas-soft rounded-md text-body hover:text-ink"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -105,7 +100,7 @@ export function Navbar() {
               animate={{ opacity: 1, height: "auto", y: 0 }}
               exit={{ opacity: 0, height: 0, y: -20 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="absolute top-28 left-4 right-4 bg-white border border-slate-100 rounded-[40px] p-10 md:hidden z-40 shadow-[0_40px_100px_rgba(0,0,0,0.1)] overflow-hidden"
+              className="absolute top-28 left-4 right-4 bg-canvas border border-mute rounded-md p-xl md:hidden z-40 shadow-md overflow-hidden"
             >
               <div className="flex flex-col gap-8">
                 {navLinks.map((link, i) => (
@@ -117,18 +112,18 @@ export function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      className="text-3xl font-black text-slate-900 hover:text-primary flex items-center justify-between group"
+                      className="font-display font-medium text-[24px] text-ink hover:text-primary flex items-center justify-between group"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {link.name}
-                      <ChevronRight className="w-6 h-6 text-slate-200 group-hover:text-primary transition-colors" />
+                      <ChevronRight className="w-6 h-6 text-mute group-hover:text-primary transition-colors" />
                     </Link>
                   </motion.div>
                 ))}
-                <hr className="border-slate-50" />
+                <hr className="border-mute" />
                 <Link
                   href="/#tools"
-                  className="bg-primary text-white text-center py-5 rounded-[24px] font-black uppercase tracking-widest shadow-xl shadow-red-100"
+                  className="btn-primary text-center"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Get Started Free

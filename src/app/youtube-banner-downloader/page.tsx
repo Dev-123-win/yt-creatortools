@@ -50,8 +50,8 @@ export default function BannerDownloader() {
       seoContent={
         <div className="space-y-8">
           <section>
-            <h3 className="text-2xl font-black mb-6 tracking-tighter">Branding Research</h3>
-            <p className="text-lg text-slate-500 font-medium leading-relaxed">
+            <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">Branding Research</h3>
+            <p className="text-body text-body-lg">
               Analyze the visual identity of top-tier channels. Our downloader fetches the original 2560x1440 
               uploaded file, ensuring you see every detail of their branding strategy.
             </p>
@@ -61,13 +61,13 @@ export default function BannerDownloader() {
     >
       <div className="flex flex-col gap-16">
         {/* Input Engine */}
-        <div className="bg-white p-3 rounded-[40px] border border-slate-200 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col md:flex-row gap-3">
-          <div className="flex-grow flex items-center px-8 gap-4">
+        <div className="bg-canvas p-sm rounded-md border border-mute flex flex-col md:flex-row gap-4 shadow-sm">
+          <div className="flex-grow flex items-center px-4 gap-4">
             <Sparkles className="w-5 h-5 text-primary opacity-30" />
             <input
               type="text"
               placeholder="Paste Channel URL or Video URL..."
-              className="w-full py-4 outline-none text-slate-900 font-black text-lg placeholder:text-slate-200 bg-transparent"
+              className="w-full py-4 outline-none text-ink font-medium text-[18px] bg-transparent placeholder-mute"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
@@ -78,7 +78,7 @@ export default function BannerDownloader() {
             whileTap={{ scale: 0.95 }}
             onClick={handleExtract}
             disabled={loading}
-            className="bg-primary text-white px-10 py-5 rounded-[28px] font-black uppercase tracking-widest text-xs shadow-xl shadow-red-100 disabled:opacity-50"
+            className="btn-primary"
           >
             {loading ? "Please wait..." : "Get Banner"}
           </motion.button>
@@ -105,11 +105,11 @@ export default function BannerDownloader() {
               animate={{ opacity: 1, y: 0 }}
               className="w-full"
             >
-              <div className="bg-white p-10 md:p-12 rounded-[56px] border border-slate-100 shadow-[0_30px_80px_rgba(0,0,0,0.03)]">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+              <div className="bg-canvas-soft p-xl rounded-md border border-mute/50 shadow-sm">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-xl">
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-3 block">Channel Found</span>
-                    <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter">{data.channelName}</h3>
+                    <span className="eyebrow-uppercase text-primary mb-2 block">Channel Found</span>
+                    <h3 className="font-display text-[32px] font-medium text-ink tracking-tight">{data.channelName}</h3>
                   </div>
                   <motion.a 
                     whileHover={{ scale: 1.05 }}
@@ -118,21 +118,21 @@ export default function BannerDownloader() {
                     download={`${data.channelName}-banner.jpg`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full md:w-auto flex items-center justify-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-[20px] font-black text-xs uppercase tracking-widest shadow-xl"
+                    className="btn-secondary flex items-center gap-2"
                   >
                     <Download className="w-4 h-4" />
                     Download Art
                   </motion.a>
                 </div>
                 
-                <div className="relative rounded-[40px] overflow-hidden aspect-[21/9] bg-slate-50 border border-slate-100 group">
+                <div className="relative rounded-md overflow-hidden aspect-[21/9] bg-canvas border border-mute/30 group">
                   <img 
                     src={data.bannerUrl} 
                     alt={data.channelName}
                     className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-10">
-                    <p className="text-white/90 font-black text-xs uppercase tracking-[0.3em]">Native Resolution 2560x1440</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-white font-medium eyebrow-uppercase">Native Resolution 2560x1440</p>
                   </div>
                 </div>
               </div>

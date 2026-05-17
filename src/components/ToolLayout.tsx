@@ -17,15 +17,15 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
     <div className="max-w-6xl mx-auto px-4 pb-32">
       {/* Breadcrumb */}
       <div className="flex justify-between items-center mb-12">
-        <nav className="flex items-center gap-3 text-sm font-bold text-slate-400">
+        <nav className="flex items-center gap-3 text-body-sm font-semibold text-mute">
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <ChevronRight className="w-4 h-4 opacity-50" />
           <Link href="/#tools" className="hover:text-primary transition-colors">Tools</Link>
           <ChevronRight className="w-4 h-4 opacity-50" />
-          <span className="text-slate-900">{title}</span>
+          <span className="text-ink">{title}</span>
         </nav>
-        <button className="p-3 bg-white border border-slate-100 rounded-2xl hover:bg-slate-50 transition-all shadow-sm">
-          <Share2 className="w-4 h-4 text-slate-600" />
+        <button className="p-sm bg-canvas border border-mute/30 rounded-md hover:bg-canvas-soft transition-all shadow-sm">
+          <Share2 className="w-4 h-4 text-body" />
         </button>
       </div>
 
@@ -35,13 +35,13 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
         animate={{ opacity: 1, y: 0 }}
         className="mb-16 text-center"
       >
-        <div className="inline-flex p-6 rounded-[32px] bg-red-50 text-primary border border-red-100 mb-8 shadow-inner animate-float">
+        <div className="inline-flex p-md rounded-md bg-canvas-soft text-primary border border-mute/30 mb-lg shadow-sm animate-float">
           <Icon className="w-10 h-10" />
         </div>
-        <h1 className="text-4xl md:text-7xl font-black mb-6 tracking-tight text-slate-900 leading-[1.1]">
+        <h1 className="font-display text-[48px] md:text-[56px] font-medium mb-md text-ink leading-tight">
           {title}
         </h1>
-        <p className="text-slate-500 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed">
+        <p className="text-body max-w-2xl mx-auto text-body-lg">
           {description}
         </p>
       </motion.div>
@@ -59,15 +59,15 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-white rounded-[48px] p-8 md:p-20 border border-slate-100 shadow-[0_30px_60px_rgba(0,0,0,0.03)]"
+          className="bg-canvas-soft rounded-md p-xl md:p-3xl border border-mute/30 shadow-sm"
         >
-          <div className="flex items-center gap-4 mb-10">
-            <div className="p-3 bg-blue-50 rounded-2xl">
-              <Info className="w-6 h-6 text-blue-500" />
+          <div className="flex items-center gap-4 mb-lg">
+            <div className="p-sm bg-canvas border border-mute/30 rounded-md">
+              <Info className="w-6 h-6 text-primary" />
             </div>
-            <h2 className="text-3xl font-black tracking-tight text-slate-900">Pro Tips & Guide</h2>
+            <h2 className="font-display text-[32px] font-medium text-ink">Pro Tips & Guide</h2>
           </div>
-          <div className="prose prose-slate max-w-none prose-p:text-slate-500 prose-p:leading-relaxed prose-headings:text-slate-900 prose-headings:font-black prose-strong:text-slate-900 prose-li:text-slate-500">
+          <div className="prose prose-slate max-w-none prose-p:text-body prose-p:text-body-md prose-headings:text-ink prose-headings:font-display prose-headings:font-medium prose-strong:text-ink prose-li:text-body">
             {seoContent}
           </div>
         </motion.div>
@@ -75,7 +75,7 @@ export function ToolLayout({ title, description, icon: Icon, children, seoConten
 
       {/* Monetization Placeholder */}
       <div className="mt-20">
-        <div className="bg-slate-50 h-32 rounded-[32px] flex items-center justify-center text-slate-300 text-xs font-black tracking-widest uppercase border-2 border-dashed border-slate-200">
+        <div className="bg-canvas-soft h-32 rounded-md flex items-center justify-center text-mute text-body-sm eyebrow-uppercase border border-dashed border-mute/50">
           Premium Sponsorship Space
         </div>
       </div>

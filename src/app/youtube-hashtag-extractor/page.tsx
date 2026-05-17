@@ -63,8 +63,8 @@ export default function HashtagExtractor() {
       seoContent={
         <div className="space-y-8">
           <section>
-            <h3 className="text-2xl font-black mb-6 tracking-tighter">Algorithm Discovery</h3>
-            <p className="text-lg text-slate-500 font-medium leading-relaxed">
+            <h3 className="font-display text-[32px] font-medium mb-sm text-ink tracking-tight">Algorithm Discovery</h3>
+            <p className="text-body text-body-lg">
               Hashtags act as high-level category markers for the YouTube algorithm. By extracting hashtags 
               from top-performing videos in your niche, you can ensure your content is indexed alongside 
               the right audience segments.
@@ -75,13 +75,13 @@ export default function HashtagExtractor() {
     >
       <div className="flex flex-col gap-16">
         {/* Input Engine */}
-        <div className="bg-white p-3 rounded-[40px] border border-slate-200 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col md:flex-row gap-3">
-          <div className="flex-grow flex items-center px-8 gap-4">
+        <div className="bg-canvas p-sm rounded-md border border-mute flex flex-col md:flex-row gap-3 shadow-sm">
+          <div className="flex-grow flex items-center px-4 gap-4">
             <Sparkles className="w-5 h-5 text-primary opacity-30" />
             <input
               type="text"
               placeholder="Paste Video or Shorts URL..."
-              className="w-full py-4 outline-none text-slate-900 font-black text-lg placeholder:text-slate-200 bg-transparent"
+              className="w-full py-4 outline-none text-ink font-medium text-[18px] bg-transparent placeholder-mute"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
@@ -92,7 +92,7 @@ export default function HashtagExtractor() {
             whileTap={{ scale: 0.95 }}
             onClick={handleExtract}
             disabled={loading}
-            className="bg-primary text-white px-10 py-5 rounded-[28px] font-black uppercase tracking-widest text-xs shadow-xl shadow-red-100 disabled:opacity-50"
+            className="btn-primary"
           >
             {loading ? "Please wait..." : "Get Hashtags"}
           </motion.button>
@@ -120,14 +120,14 @@ export default function HashtagExtractor() {
               className="flex flex-col gap-10"
             >
               <div className="flex justify-between items-center px-4">
-                <h3 className="text-2xl font-black text-slate-900 tracking-tighter">Extracted ({hashtags.length})</h3>
+                <h3 className="font-display text-[24px] font-medium text-ink tracking-tight">Extracted ({hashtags.length})</h3>
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={copyAll}
-                  className="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-[20px] transition-all text-xs font-black uppercase tracking-widest shadow-xl"
+                  className="btn-secondary flex items-center gap-2"
                 >
-                  {allCopied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                  {allCopied ? "Copied" : "Copy All"}
+                  {allCopied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                  {allCopied ? "Copied All" : "Copy All"}
                 </motion.button>
               </div>
 
@@ -139,12 +139,12 @@ export default function HashtagExtractor() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.05 }}
                     onClick={() => copyHashtag(tag, index)}
-                    className="bg-white px-8 py-5 rounded-[24px] border border-slate-100 hover:border-primary/30 cursor-pointer transition-all flex items-center gap-4 group shadow-sm hover:shadow-lg"
+                    className="bg-canvas px-lg py-sm rounded-md border border-mute/50 hover:border-primary/50 cursor-pointer transition-all flex items-center gap-4 group shadow-sm"
                   >
-                    <span className="text-xl font-black text-primary group-hover:scale-125 transition-transform">#</span>
-                    <span className="text-sm font-bold text-slate-700">{tag.replace("#", "")}</span>
-                    <div className="text-slate-200 group-hover:text-primary ml-2">
-                      {copiedIndex === index ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    <span className="text-xl font-medium text-primary group-hover:scale-125 transition-transform">#</span>
+                    <span className="text-body-md font-medium text-ink group-hover:text-primary transition-colors">{tag.replace("#", "")}</span>
+                    <div className="text-mute group-hover:text-primary ml-2 transition-colors">
+                      {copiedIndex === index ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
                     </div>
                   </motion.div>
                 ))}
