@@ -12,14 +12,12 @@ interface AdConfig {
 }
 
 const AD_CONFIGS: Record<AdVariant, AdConfig> = {
-  /** 320×50 — horizontal strip banner */
   strip: {
     key: "96039399f3ec34f6457842cdbfdf7463",
     width: 320,
     height: 50,
     src: "https://www.highperformanceformat.com/96039399f3ec34f6457842cdbfdf7463/invoke.js",
   },
-  /** 300×250 — medium rectangle (highest IAB CTR format) */
   rectangle: {
     key: "f0f4628b551349ecee0b9b1d5946708c",
     width: 300,
@@ -28,27 +26,44 @@ const AD_CONFIGS: Record<AdVariant, AdConfig> = {
   },
 };
 
+/* ─── Module-level sequential queue ──────────────────────────────────────
+ * Problem: multiple AdsterraBanner instances on the same page all write to
+ * the GLOBAL window.atOptions before their async invoke.js fires. The last
+ * write wins, so every ad ends up using the last component's config.
+ *
+ * Solution: serialize ad loading via a queue. Each ad's configScript +
+ * invokeScript only runs after the PREVIOUS ad's invokeScript has fired
+ * its onload (or times out). This guarantees atOptions is stable for each
+ * invoke call with no race conditions.
+ * ─────────────────────────────────────────────────────────────────────── */
+type Task = () => void;
+const queue: Task[] = [];
+let busy = false;
+const TIMEOUT_MS = 4000; // move on if invoke.js takes too long
+
+function next() {
+  if (busy || queue.length === 0) return;
+  busy = true;
+  queue.shift()!();
+}
+
+function done() {
+  busy = false;
+  next();
+}
+
+function enqueue(task: Task) {
+  queue.push(task);
+  next();
+}
+
+/* ─── Component ─────────────────────────────────────────────────────── */
 interface AdsterraBannerProps {
   variant?: AdVariant;
   showLabel?: boolean;
   className?: string;
 }
 
-/**
- * Client-only Adsterra ad component.
- *
- * Why useEffect + imperative injection:
- *   Adsterra's invoke.js adds a className to the <script> tag after it loads.
- *   That mutates the DOM in a way SSR cannot predict → hydration mismatch.
- *   By never touching the DOM during SSR we side-step this entirely.
- *
- * Why IIFE for atOptions:
- *   atOptions is a global variable. If two AdsterraBanner instances load on the
- *   same page and both write atOptions before their invoke.js fires, the second
- *   write clobbers the first — the first ad then uses the wrong config.
- *   Wrapping the config + invoke call in an IIFE gives each ad its own closure
- *   so they can never race against each other.
- */
 export function AdsterraBanner({
   variant = "strip",
   showLabel = true,
@@ -61,34 +76,43 @@ export function AdsterraBanner({
   useEffect(() => {
     if (injected.current || !containerRef.current) return;
     injected.current = true;
-
     const container = containerRef.current;
 
-    // Wrap config + invoke inside a self-executing function so two ads on the
-    // same page each get their own atOptions and never clobber each other.
-    const configScript = document.createElement("script");
-    configScript.type = "text/javascript";
-    configScript.text = `
-      (function() {
-        var atOptions = {
-          'key'    : '${cfg.key}',
-          'format' : 'iframe',
-          'height' : ${cfg.height},
-          'width'  : ${cfg.width},
-          'params' : {}
-        };
-        var s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = '${cfg.src}';
-        // Append to THIS container so Adsterra renders inside it
-        var c = document.currentScript
-          ? document.currentScript.parentNode
-          : document.body;
-        c.appendChild(s);
-      })();
-    `;
-    container.appendChild(configScript);
+    enqueue(() => {
+      let timer: ReturnType<typeof setTimeout>;
+
+      // 1. Set global atOptions right before the invoke script — no other
+      //    ad can overwrite it between these two synchronous statements
+      //    because nothing else runs between them in the JS event loop.
+      const configScript = document.createElement("script");
+      configScript.type = "text/javascript";
+      configScript.text = [
+        "window.atOptions = {",
+        `  'key'    : '${cfg.key}',`,
+        `  'format' : 'iframe',`,
+        `  'height' : ${cfg.height},`,
+        `  'width'  : ${cfg.width},`,
+        `  'params' : {}`,
+        "};",
+      ].join("\n");
+      container.appendChild(configScript);
+
+      // 2. Load invoke.js and release the queue when done
+      const invokeScript = document.createElement("script");
+      invokeScript.type = "text/javascript";
+      invokeScript.src = cfg.src;
+
+      const release = () => {
+        clearTimeout(timer);
+        done();
+      };
+
+      invokeScript.onload = release;
+      invokeScript.onerror = release;          // don't stall queue on network error
+      timer = setTimeout(release, TIMEOUT_MS); // safety fallback
+
+      container.appendChild(invokeScript);
+    });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
