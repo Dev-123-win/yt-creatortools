@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
 import { Image as ImageIcon, Tag, FileText, Layout, UserCircle, Hash, Zap, Shield, Play as YoutubeIcon, ArrowDown, ChevronDown } from "lucide-react";
 import { ToolCard } from "@/components/ToolCard";
+import { AdsterraBanner } from "@/components/AdsterraBanner";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 
@@ -221,15 +222,27 @@ function HeroOrbs({ scrollYProgress }: { scrollYProgress: any }) {
 }
 
 export default function Home() {
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroRef = useRef<HTMLElement>(null);
+  // Use window scroll (no target) to avoid framer-motion's non-static container warning.
+  // We convert raw scrollY into a 0-1 hero progress by dividing by the hero's clientHeight.
+  const { scrollY } = useScroll();
+  const [heroHeight, setHeroHeight] = useState(900);
+
+  useEffect(() => {
+    const measure = () => setHeroHeight(heroRef.current?.clientHeight ?? window.innerHeight);
+    measure();
+    window.addEventListener("resize", measure, { passive: true });
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const scrollYProgress = useTransform(scrollY, [0, heroHeight], [0, 1]);
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  
+
   // Dynamic backdrop blur that applies to all layout assets behind the hero on scroll
   const backdropBlur = useTransform(scrollYProgress, [0, 0.8], ["blur(0px)", "blur(28px)"]);
 
   return (
-    <div className="flex flex-col">
+    <div className="relative flex flex-col">
       {/* ── Hero ─────────────────────────────────────────── */}
       <section ref={heroRef} className="relative min-h-[92vh] flex items-center justify-center overflow-hidden px-5">
         <HeroOrbs scrollYProgress={scrollYProgress} />
@@ -302,24 +315,15 @@ export default function Home() {
             </motion.a>
           </motion.div>
 
-          {/* Floating chips */}
+
+          {/* Adsterra Sponsored Ad */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="flex items-center justify-center gap-3 flex-wrap mt-10"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.65 }}
+            className="mt-10"
           >
-            {["No Login", "No API Key", "100% Free", "GDPR Safe"].map((label, i) => (
-              <motion.span
-                key={label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + i * 0.08 }}
-                className="chip bg-[rgba(0,0,0,0.04)] text-[#45474b] border border-[#e5e2e2]"
-              >
-                ✓ {label}
-              </motion.span>
-            ))}
+            <AdsterraBanner showLabel />
           </motion.div>
         </motion.div>
 
@@ -395,6 +399,17 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Mid-page Ad (300×250 rectangle — highest IAB CTR format) ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ type: "spring", stiffness: 80, damping: 20 }}
+        className="flex justify-center py-10 px-5"
+      >
+        <AdsterraBanner variant="rectangle" showLabel />
+      </motion.div>
 
       {/* ── Features ──────────────────────────────────────── */}
       <section className="py-24 px-5 bg-[rgba(255,255,255,0.5)]" style={{ backdropFilter: "blur(8px)", borderTop: "1px solid #e5e2e2", borderBottom: "1px solid #e5e2e2" }}>

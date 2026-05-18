@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { LucideIcon, Share2, ChevronRight, BookOpen } from "lucide-react";
 import Link from "next/link";
+import { AdsterraBanner } from "@/components/AdsterraBanner";
 
 interface ToolLayoutProps {
   title: string;
@@ -92,6 +93,17 @@ export function ToolLayout({ title, description, icon: Icon, iconColor = "#c6d4f
         {children}
       </motion.div>
 
+      {/* Post-result rectangle ad — user just completed their task, attention is idle */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ type: "spring", stiffness: 80, damping: 20 }}
+        className="flex justify-center mb-10"
+      >
+        <AdsterraBanner variant="rectangle" showLabel />
+      </motion.div>
+
       {/* SEO / Guide section */}
       {seoContent && (
         <motion.div
@@ -117,9 +129,9 @@ export function ToolLayout({ title, description, icon: Icon, iconColor = "#c6d4f
         </motion.div>
       )}
 
-      {/* Ad placeholder */}
-      <div className="mt-12 h-20 rounded-2xl border border-dashed border-[#e5e2e2] flex items-center justify-center">
-        <span className="label-caps text-[#c6c6cb]">Sponsored Space</span>
+      {/* Ad placement */}
+      <div className="mt-12 flex flex-col items-center">
+        <AdsterraBanner showLabel />
       </div>
     </div>
   );

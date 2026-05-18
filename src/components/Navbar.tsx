@@ -39,16 +39,17 @@ export function Navbar() {
       <nav
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-          isScrolled ? "py-3 px-4" : "py-5 px-4"
+          isScrolled
+            ? "py-3 px-4 bg-[rgba(255,255,255,0.75)] backdrop-blur-xl border-b border-[rgba(0,0,0,0.06)] shadow-[0_4px_24px_rgba(0,0,0,0.05)]"
+            : "py-5 px-4"
         )}
+        style={isScrolled ? { WebkitBackdropFilter: "blur(20px)" } : undefined}
         aria-label="Main navigation"
       >
         <div
           className={cn(
             "w-full max-w-[1280px] mx-auto flex items-center justify-between transition-all duration-500 px-5 py-3 rounded-2xl",
-            isScrolled
-              ? "glass shadow-[0_8px_32px_rgba(0,0,0,0.06)]"
-              : "bg-transparent"
+            isScrolled ? "" : "bg-transparent"
           )}
         >
           {/* Logo */}

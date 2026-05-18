@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Play as YoutubeIcon } from "lucide-react";
+import { AdsterraBanner } from "@/components/AdsterraBanner";
 
 const tools = [
   { name: "Thumbnail Downloader", href: "/youtube-thumbnail-downloader" },
@@ -86,6 +87,11 @@ export function Footer() {
               ))}
             </ul>
           </div>
+        </div>
+
+        {/* Adsterra Sponsored Ad */}
+        <div className="py-6 flex flex-col items-center gap-2 border-t border-[#e5e2e2]">
+          <AdsterraBanner showLabel />
         </div>
 
         {/* Bottom bar */}
