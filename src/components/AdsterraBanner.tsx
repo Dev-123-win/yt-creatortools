@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-type AdVariant = "strip" | "rectangle";
+type AdVariant = "strip" | "rectangle" | "native" | "leaderboard";
 
 interface AdConfig {
   key: string;
@@ -23,6 +23,18 @@ const AD_CONFIGS: Record<AdVariant, AdConfig> = {
     width: 300,
     height: 250,
     src: "https://www.highperformanceformat.com/f0f4628b551349ecee0b9b1d5946708c/invoke.js",
+  },
+  native: {
+    key: "c204a8ff65a5413ead8d32eacfcf5d0b",
+    width: 320,
+    height: 100,
+    src: "https://www.highperformanceformat.com/c204a8ff65a5413ead8d32eacfcf5d0b/invoke.js",
+  },
+  leaderboard: {
+    key: "728d8442a2d04a8ff65a5f68ad8d32ea",
+    width: 728,
+    height: 90,
+    src: "https://www.highperformanceformat.com/728d8442a2d04a8ff65a5f68ad8d32ea/invoke.js",
   },
 };
 
@@ -116,10 +128,10 @@ export function AdsterraBanner({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className={`flex flex-col items-center gap-1 ${className}`}>
+    <div className={`glass p-4 rounded-2xl flex flex-col items-center gap-2 border border-white/40 shadow-sm ${className}`}>
       {showLabel && (
         <span
-          className="text-[#c6c6cb]"
+          className="text-[#76777b] select-none"
           style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             fontSize: "10px",
@@ -134,9 +146,10 @@ export function AdsterraBanner({
       <div
         ref={containerRef}
         suppressHydrationWarning
-        className="overflow-hidden rounded-xl opacity-80 hover:opacity-100 transition-opacity"
-        style={{ minWidth: cfg.width, minHeight: cfg.height }}
+        className="overflow-hidden rounded-xl opacity-90 hover:opacity-100 transition-opacity"
+        style={{ width: cfg.width, height: cfg.height }}
       />
     </div>
   );
 }
+

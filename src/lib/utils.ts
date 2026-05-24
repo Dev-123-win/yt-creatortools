@@ -44,3 +44,42 @@ export function extractChannelId(url: string): string | null {
   }
   return null;
 }
+
+/**
+ * Copies text to the clipboard. Supports modern navigator.clipboard and fallback to textarea for non-secure environments.
+ */
+export async function copyToClipboard(text: string): Promise<boolean> {
+  if (!text) return false;
+  
+  // 1. Try modern API first
+  if (typeof navigator !== "undefined" && navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) {
+      console.warn("Navigator clipboard write failed, trying fallback...", e);
+    }
+  }
+
+  // 2. Fallback to textarea
+  try {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    // Prevent scrolling or zooming
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    textArea.style.pointerEvents = "none";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const successful = document.execCommand("copy");
+    document.body.removeChild(textArea);
+    return successful;
+  } catch (err) {
+    console.error("Fallback clipboard copy failed:", err);
+    return false;
+  }
+}
+
