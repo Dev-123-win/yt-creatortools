@@ -1,9 +1,10 @@
 "use client";
-
 import { useState } from "react";
-import { FileText, Copy, Check, AlertCircle, Loader2, Link2, Type } from "lucide-react";
+import { FileText, Copy, Check, AlertCircle, Loader2, Link2, Type, Clipboard, Maximize2, Minimize2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { motion, AnimatePresence } from "framer-motion";
+import { copyToClipboard, extractYouTubeId } from "@/lib/utils";
+import { Toast } from "@/components/Toast";
 
 export default function MetadataExtractor() {
   const [url, setUrl] = useState("");
@@ -12,12 +13,27 @@ export default function MetadataExtractor() {
   const [error, setError] = useState<string | null>(null);
   const [copiedTitle, setCopiedTitle] = useState(false);
   const [copiedDesc, setCopiedDesc] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [toastShow, setToastShow] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        setUrl(text);
+      }
+    } catch (err) {
+      console.warn("Failed to read from clipboard", err);
+    }
+  };
 
   const handleExtract = async () => {
     if (!url.trim()) return;
     setLoading(true);
     setError(null);
     setData(null);
+    setIsExpanded(false);
     try {
       const res = await fetch("/api/extract", {
         method: "POST",
@@ -40,16 +56,32 @@ export default function MetadataExtractor() {
     }
   };
 
-  const copyText = (text: string, type: "title" | "desc") => {
-    navigator.clipboard.writeText(text);
-    if (type === "title") {
-      setCopiedTitle(true);
-      setTimeout(() => setCopiedTitle(false), 2000);
-    } else {
-      setCopiedDesc(true);
-      setTimeout(() => setCopiedDesc(false), 2000);
+  const copyText = async (text: string, type: "title" | "desc") => {
+    const success = await copyToClipboard(text);
+    if (success) {
+      if (type === "title") {
+        setCopiedTitle(true);
+        setToastMessage("Title copied to clipboard!");
+        setToastShow(true);
+        setTimeout(() => setCopiedTitle(false), 2000);
+      } else {
+        setCopiedDesc(true);
+        setToastMessage("Description copied to clipboard!");
+        setToastShow(true);
+        setTimeout(() => setCopiedDesc(false), 2000);
+      }
     }
   };
+
+  const getWordCount = (text: string) => {
+    return text ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+  };
+
+  const getCharCount = (text: string) => {
+    return text ? text.length : 0;
+  };
+
+  const isValidUrl = url ? !!extractYouTubeId(url) : null;
 
   return (
     <ToolLayout
@@ -70,8 +102,8 @@ export default function MetadataExtractor() {
     >
       <div className="flex flex-col gap-6">
         {/* Input */}
-        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2">
-          <div className="flex items-center gap-3 flex-grow px-4 py-1">
+        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2 items-center">
+          <div className="flex items-center gap-3 flex-grow w-full px-4 py-1">
             <Link2 className="w-4 h-4 text-[#c6c6cb] flex-shrink-0" />
             <input
               id="metadata-url-input"
@@ -84,6 +116,30 @@ export default function MetadataExtractor() {
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
               aria-label="YouTube video URL"
             />
+            {/* Validation Indicator */}
+            {url && (
+              <div className="flex-shrink-0">
+                {isValidUrl ? (
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    <Check className="w-3.5 h-3.5" /> Valid
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+                    <AlertCircle className="w-3.5 h-3.5" /> Invalid
+                  </span>
+                )}
+              </div>
+            )}
+            
+            {/* Paste Button */}
+            <button
+              type="button"
+              onClick={handlePaste}
+              className="flex-shrink-0 text-xs font-semibold text-[#5a5f68] hover:text-[#1c1b1c] bg-[#f0eded] hover:bg-[#e5e2e2] px-2.5 py-1.5 rounded-lg border border-[#e5e2e2] transition-colors flex items-center gap-1"
+              title="Paste from clipboard"
+            >
+              <Clipboard className="w-3 h-3" /> Paste
+            </button>
           </div>
           <motion.button
             id="metadata-extract-btn"
@@ -92,7 +148,7 @@ export default function MetadataExtractor() {
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             onClick={handleExtract}
             disabled={loading || !url.trim()}
-            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed w-full sm:w-auto"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Extract Data"}
           </motion.button>
@@ -142,57 +198,84 @@ export default function MetadataExtractor() {
           {data && !loading && (
             <motion.div key="results" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-6">
               {/* Title Card */}
-              <div className="prismatic-card p-6 relative group overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                   <motion.button
+              <div className="prismatic-card p-6 relative group overflow-hidden bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Type className="w-4 h-4 text-[#c6c6cb]" />
+                    <span className="label-caps text-[#76777b]">Video Title</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[12px] font-semibold text-[#76777b] bg-[#f0eded] px-2.5 py-1 rounded-md border border-[#e5e2e2]">
+                      {getCharCount(data.title)} chars
+                    </span>
+                    <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => copyText(data.title, "title")}
-                      className="btn-secondary !py-2 !px-4 !text-[13px] !rounded-lg"
+                      className="btn-secondary !py-2 !px-4 !text-[13px] !rounded-lg flex items-center gap-1 w-full sm:w-auto"
                       aria-label="Copy title"
-                   >
-                     {copiedTitle ? <Check className="w-4 h-4 text-[#4ade80]" /> : <Copy className="w-4 h-4" />}
-                     {copiedTitle ? "Copied" : "Copy"}
-                   </motion.button>
+                    >
+                      {copiedTitle ? <Check className="w-4 h-4 text-[#4ade80]" /> : <Copy className="w-4 h-4" />}
+                      {copiedTitle ? "Copied" : "Copy Title"}
+                    </motion.button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Type className="w-4 h-4 text-[#c6c6cb]" />
-                  <span className="label-caps text-[#76777b]">Video Title</span>
-                </div>
-                <h2 style={{ fontFamily: "'Newsreader', serif", fontSize: "28px", fontWeight: 500, color: "#1c1b1c", lineHeight: 1.3, paddingRight: "80px" }}>
+                <h2 style={{ fontFamily: "'Newsreader', serif", fontSize: "28px", fontWeight: 500, color: "#1c1b1c", lineHeight: 1.3 }}>
                   {data.title}
                 </h2>
               </div>
 
               {/* Description Card */}
-              <div className="prismatic-card p-6 relative group flex flex-col max-h-[600px]">
-                 <div className="flex items-center justify-between mb-4">
-                   <div className="flex items-center gap-2">
-                     <FileText className="w-4 h-4 text-[#c6c6cb]" />
-                     <span className="label-caps text-[#76777b]">Description</span>
-                   </div>
-                   <motion.button
+              <div className="prismatic-card p-6 relative group flex flex-col bg-white/70 backdrop-blur-sm border border-white/50 shadow-sm transition-all duration-300">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-[#c6c6cb]" />
+                    <span className="label-caps text-[#76777b]">Description</span>
+                  </div>
+                  <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+                    <span className="text-[12px] font-semibold text-[#76777b] bg-[#f0eded] px-2.5 py-1 rounded-md border border-[#e5e2e2]">
+                      {getWordCount(data.description)} words
+                    </span>
+                    <span className="text-[12px] font-semibold text-[#76777b] bg-[#f0eded] px-2.5 py-1 rounded-md border border-[#e5e2e2]">
+                      {getCharCount(data.description)} chars
+                    </span>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="btn-secondary !py-2 !px-4 !text-[13px] !rounded-lg flex items-center gap-1"
+                      aria-label={isExpanded ? "Collapse Description" : "Expand Description"}
+                    >
+                      {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                      {isExpanded ? "Collapse" : "Expand"}
+                    </motion.button>
+                    <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => copyText(data.description, "desc")}
-                      className="btn-secondary !py-2 !px-4 !text-[13px] !rounded-lg"
+                      className="btn-primary !py-2 !px-4 !text-[13px] !rounded-lg flex items-center gap-1"
                       aria-label="Copy description"
-                   >
-                     {copiedDesc ? <Check className="w-4 h-4 text-[#4ade80]" /> : <Copy className="w-4 h-4" />}
-                     {copiedDesc ? "Copied" : "Copy"}
-                   </motion.button>
-                 </div>
-                 
-                 <div className="flex-grow overflow-y-auto pr-4 bg-[#fcf8f9] rounded-xl p-4 border border-[#e5e2e2]">
-                   <pre className="whitespace-pre-wrap font-sans text-[14px] leading-relaxed text-[#45474b]">
-                     {data.description}
-                   </pre>
-                 </div>
+                    >
+                      {copiedDesc ? <Check className="w-4 h-4 text-[#4ade80]" /> : <Copy className="w-4 h-4" />}
+                      {copiedDesc ? "Copied" : "Copy Description"}
+                    </motion.button>
+                  </div>
+                </div>
+                
+                <div 
+                  className={`overflow-y-auto pr-2 bg-[#fcf8f9]/80 rounded-xl p-4 border border-[#e5e2e2] transition-all duration-300 ${
+                    isExpanded ? "max-h-none min-h-[400px]" : "max-h-[300px]"
+                  }`}
+                >
+                  <pre className="whitespace-pre-wrap font-sans text-[14.5px] leading-relaxed text-[#45474b]">
+                    {data.description}
+                  </pre>
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      <Toast message={toastMessage} show={toastShow} onClose={() => setToastShow(false)} />
     </ToolLayout>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Image as ImageIcon, Download, Copy, Check, AlertCircle, Loader2, Link2 } from "lucide-react";
+import { Image as ImageIcon, Download, Copy, Check, AlertCircle, Loader2, Link2, Clipboard } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
-import { extractYouTubeId } from "@/lib/utils";
+import { extractYouTubeId, copyToClipboard } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { Toast } from "@/components/Toast";
 
 const qualities = [
   { label: "Max Resolution", sublabel: "Up to 4K · Native", name: "maxresdefault", badge: "4K" },
@@ -19,6 +20,9 @@ export default function ThumbnailDownloaderClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+  const [downloadingQuality, setDownloadingQuality] = useState<string | null>(null);
+  const [toastShow, setToastShow] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const handleExtract = () => {
     setError(null);
@@ -35,14 +39,55 @@ export default function ThumbnailDownloaderClient() {
     }, 500);
   };
 
-  const copyUrl = (thumbUrl: string) => {
-    navigator.clipboard.writeText(thumbUrl);
-    setCopiedUrl(thumbUrl);
-    setTimeout(() => setCopiedUrl(null), 2000);
+  const copyUrl = async (thumbUrl: string) => {
+    const success = await copyToClipboard(thumbUrl);
+    if (success) {
+      setCopiedUrl(thumbUrl);
+      setToastMessage("Thumbnail URL copied to clipboard!");
+      setToastShow(true);
+      setTimeout(() => setCopiedUrl(null), 2000);
+    }
+  };
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        setUrl(text);
+      }
+    } catch (err) {
+      console.warn("Failed to read from clipboard", err);
+    }
+  };
+
+  const handleDownload = async (imageUrl: string, filename: string, qualityName: string) => {
+    try {
+      setDownloadingQuality(qualityName);
+      const proxyUrl = `/api/download?url=${encodeURIComponent(imageUrl)}`;
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error("Failed to download image");
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Download failed:", err);
+      window.open(imageUrl, "_blank");
+    } finally {
+      setDownloadingQuality(null);
+    }
   };
 
   const thumbUrl = (name: string) =>
     `https://img.youtube.com/vi/${videoId}/${name}.jpg`;
+
+  const isValid = url ? !!extractYouTubeId(url) : null;
 
   return (
     <ToolLayout
@@ -81,8 +126,8 @@ export default function ThumbnailDownloaderClient() {
     >
       <div className="flex flex-col gap-6">
         {/* URL Input */}
-        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2">
-          <div className="flex items-center gap-3 flex-grow px-4 py-1">
+        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2 items-center">
+          <div className="flex items-center gap-3 flex-grow w-full px-4 py-1">
             <Link2 className="w-4 h-4 text-[#c6c6cb] flex-shrink-0" />
             <input
               id="thumbnail-url-input"
@@ -95,6 +140,30 @@ export default function ThumbnailDownloaderClient() {
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
               aria-label="YouTube video URL"
             />
+            {/* Validation Indicator */}
+            {url && (
+              <div className="flex-shrink-0">
+                {isValid ? (
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    <Check className="w-3.5 h-3.5" /> Valid
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+                    <AlertCircle className="w-3.5 h-3.5" /> Invalid
+                  </span>
+                )}
+              </div>
+            )}
+            
+            {/* Paste Button */}
+            <button
+              type="button"
+              onClick={handlePaste}
+              className="flex-shrink-0 text-xs font-semibold text-[#5a5f68] hover:text-[#1c1b1c] bg-[#f0eded] hover:bg-[#e5e2e2] px-2.5 py-1.5 rounded-lg border border-[#e5e2e2] transition-colors flex items-center gap-1"
+              title="Paste from clipboard"
+            >
+              <Clipboard className="w-3 h-3" /> Paste
+            </button>
           </div>
           <motion.button
             id="thumbnail-extract-btn"
@@ -103,7 +172,7 @@ export default function ThumbnailDownloaderClient() {
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             onClick={handleExtract}
             disabled={loading || !url.trim()}
-            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed w-full sm:w-auto"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Download"}
           </motion.button>
@@ -194,19 +263,21 @@ export default function ThumbnailDownloaderClient() {
                         >
                           {isCopied ? <Check className="w-4 h-4 text-[#4ade80]" /> : <Copy className="w-4 h-4 text-[#5a5f68]" />}
                         </motion.button>
-                        <motion.a
+                        <motion.button
                           whileHover={{ scale: 1.04 }}
                           whileTap={{ scale: 0.94 }}
-                          href={tUrl}
-                          download={`thumbnail-${q.name}.jpg`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-primary !py-2 !px-4 !text-[13px] !rounded-xl"
+                          onClick={() => handleDownload(tUrl, `thumbnail-${q.name}.jpg`, q.name)}
+                          disabled={downloadingQuality !== null}
+                          className="btn-primary !py-2 !px-4 !text-[13px] !rounded-xl flex items-center gap-1.5"
                           aria-label={`Download ${q.label}`}
                         >
-                          <Download className="w-3.5 h-3.5" />
-                          Save
-                        </motion.a>
+                          {downloadingQuality === q.name ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Download className="w-3.5 h-3.5" />
+                          )}
+                          {downloadingQuality === q.name ? "Saving..." : "Save"}
+                        </motion.button>
                       </div>
                     </div>
                   </motion.div>
@@ -216,6 +287,7 @@ export default function ThumbnailDownloaderClient() {
           )}
         </AnimatePresence>
       </div>
+      <Toast message={toastMessage} show={toastShow} onClose={() => setToastShow(false)} />
     </ToolLayout>
   );
 }

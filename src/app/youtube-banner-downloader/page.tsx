@@ -1,15 +1,70 @@
 "use client";
 
 import { useState } from "react";
-import { Layout, Download, AlertCircle, Loader2, Link2 } from "lucide-react";
+import { Layout, Download, AlertCircle, Loader2, Link2, Clipboard, Copy, Check } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { motion, AnimatePresence } from "framer-motion";
+import { copyToClipboard } from "@/lib/utils";
+import { Toast } from "@/components/Toast";
 
 export default function BannerDownloader() {
   const [url, setUrl] = useState("");
   const [data, setData] = useState<{ bannerUrl: string; channelName: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [toastShow, setToastShow] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        setUrl(text);
+      }
+    } catch (err) {
+      console.warn("Failed to read from clipboard", err);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (!data?.bannerUrl) return;
+    const success = await copyToClipboard(data.bannerUrl);
+    if (success) {
+      setCopied(true);
+      setToastMessage("Banner URL copied to clipboard!");
+      setToastShow(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!data?.bannerUrl) return;
+    try {
+      setDownloading(true);
+      const proxyUrl = `/api/download?url=${encodeURIComponent(data.bannerUrl)}`;
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error("Failed to download image");
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `${data.channelName}-banner.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Download failed:", err);
+      window.open(data.bannerUrl, "_blank");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const isValidUrl = url ? (url.toLowerCase().includes("youtube.com") || url.toLowerCase().includes("youtu.be")) : null;
 
   const handleExtract = async () => {
     if (!url.trim()) return;
@@ -59,8 +114,8 @@ export default function BannerDownloader() {
     >
       <div className="flex flex-col gap-6">
         {/* Input */}
-        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2">
-          <div className="flex items-center gap-3 flex-grow px-4 py-1">
+        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2 items-center">
+          <div className="flex items-center gap-3 flex-grow w-full px-4 py-1">
             <Link2 className="w-4 h-4 text-[#c6c6cb] flex-shrink-0" />
             <input
               id="banner-url-input"
@@ -73,6 +128,30 @@ export default function BannerDownloader() {
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
               aria-label="YouTube Channel or Video URL"
             />
+            {/* Validation Indicator */}
+            {url && (
+              <div className="flex-shrink-0">
+                {isValidUrl ? (
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    <Check className="w-3.5 h-3.5" /> Valid
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+                    <AlertCircle className="w-3.5 h-3.5" /> Invalid
+                  </span>
+                )}
+              </div>
+            )}
+            
+            {/* Paste Button */}
+            <button
+              type="button"
+              onClick={handlePaste}
+              className="flex-shrink-0 text-xs font-semibold text-[#5a5f68] hover:text-[#1c1b1c] bg-[#f0eded] hover:bg-[#e5e2e2] px-2.5 py-1.5 rounded-lg border border-[#e5e2e2] transition-colors flex items-center gap-1"
+              title="Paste from clipboard"
+            >
+              <Clipboard className="w-3 h-3" /> Paste
+            </button>
           </div>
           <motion.button
             id="banner-extract-btn"
@@ -81,7 +160,7 @@ export default function BannerDownloader() {
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             onClick={handleExtract}
             disabled={loading || !url.trim()}
-            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed w-full sm:w-auto"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Get Banner"}
           </motion.button>
@@ -131,18 +210,26 @@ export default function BannerDownloader() {
                      {data.channelName}
                    </h2>
                  </div>
-                 <motion.a
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    href={data.bannerUrl}
-                    download={`${data.channelName}-banner.jpg`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary !py-2.5 !px-5 !rounded-xl shadow-sm"
-                 >
-                   <Download className="w-4 h-4" />
-                   Download Art
-                 </motion.a>
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <motion.button
+                      whileTap={{ scale: 0.88 }}
+                      onClick={handleCopy}
+                      className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#e5e2e2] bg-white hover:border-[#c6c6cb] transition-colors"
+                      aria-label="Copy Banner URL"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-[#4ade80]" /> : <Copy className="w-4 h-4 text-[#5a5f68]" />}
+                    </motion.button>
+                    <motion.button
+                       whileHover={{ scale: 1.04 }}
+                       whileTap={{ scale: 0.96 }}
+                       onClick={handleDownload}
+                       disabled={downloading}
+                       className="btn-primary !py-2.5 !px-5 !rounded-xl shadow-sm flex items-center gap-2"
+                    >
+                      {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                      {downloading ? "Saving..." : "Download Art"}
+                    </motion.button>
+                  </div>
                </div>
 
                <div className="relative rounded-xl overflow-hidden aspect-[21/9] bg-[#f0eded] border border-[#e5e2e2] group">
@@ -159,6 +246,7 @@ export default function BannerDownloader() {
           )}
         </AnimatePresence>
       </div>
+      <Toast message={toastMessage} show={toastShow} onClose={() => setToastShow(false)} />
     </ToolLayout>
   );
 }

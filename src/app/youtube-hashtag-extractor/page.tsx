@@ -1,9 +1,10 @@
 "use client";
-
 import { useState } from "react";
-import { Hash, Copy, Check, AlertCircle, Loader2, Link2 } from "lucide-react";
+import { Hash, Copy, Check, AlertCircle, Loader2, Link2, TrendingUp, ExternalLink, Clipboard } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { motion, AnimatePresence } from "framer-motion";
+import { copyToClipboard, extractYouTubeId } from "@/lib/utils";
+import { Toast } from "@/components/Toast";
 
 export default function HashtagExtractor() {
   const [url, setUrl] = useState("");
@@ -12,13 +13,25 @@ export default function HashtagExtractor() {
   const [error, setError] = useState<string | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [allCopied, setAllCopied] = useState(false);
+  const [toastShow, setToastShow] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        setUrl(text);
+      }
+    } catch (err) {
+      console.warn("Failed to read from clipboard", err);
+    }
+  };
 
   const handleExtract = async () => {
     if (!url.trim()) return;
     setLoading(true);
     setError(null);
     setHashtags([]);
-    
     try {
       const res = await fetch("/api/extract", {
         method: "POST",
@@ -26,7 +39,6 @@ export default function HashtagExtractor() {
         body: JSON.stringify({ url }),
       });
       const data = await res.json();
-      
       if (data.error) {
         setError(data.error);
       } else {
@@ -43,17 +55,27 @@ export default function HashtagExtractor() {
     }
   };
 
-  const copyHashtag = (tag: string, index: number) => {
-    navigator.clipboard.writeText(tag);
-    setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 2000);
+  const copyHashtag = async (tag: string, index: number) => {
+    const success = await copyToClipboard(tag);
+    if (success) {
+      setCopiedIndex(index);
+      setToastMessage(`Copied ${tag} to clipboard!`);
+      setToastShow(true);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    }
   };
 
-  const copyAll = () => {
-    navigator.clipboard.writeText(hashtags.join(" "));
-    setAllCopied(true);
-    setTimeout(() => setAllCopied(false), 2000);
+  const copyAll = async () => {
+    const success = await copyToClipboard(hashtags.join(" "));
+    if (success) {
+      setAllCopied(true);
+      setToastMessage("Copied all hashtags to clipboard!");
+      setToastShow(true);
+      setTimeout(() => setAllCopied(false), 2000);
+    }
   };
+
+  const isValidUrl = url ? !!extractYouTubeId(url) : null;
 
   return (
     <ToolLayout
@@ -74,8 +96,8 @@ export default function HashtagExtractor() {
     >
       <div className="flex flex-col gap-6">
         {/* Input */}
-        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2">
-          <div className="flex items-center gap-3 flex-grow px-4 py-1">
+        <div className="prismatic-card p-2 flex flex-col sm:flex-row gap-2 items-center">
+          <div className="flex items-center gap-3 flex-grow w-full px-4 py-1">
             <Link2 className="w-4 h-4 text-[#c6c6cb] flex-shrink-0" />
             <input
               id="hashtag-url-input"
@@ -88,6 +110,30 @@ export default function HashtagExtractor() {
               onKeyDown={(e) => e.key === "Enter" && handleExtract()}
               aria-label="YouTube video URL"
             />
+            {/* Validation Indicator */}
+            {url && (
+              <div className="flex-shrink-0">
+                {isValidUrl ? (
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    <Check className="w-3.5 h-3.5" /> Valid
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+                    <AlertCircle className="w-3.5 h-3.5" /> Invalid
+                  </span>
+                )}
+              </div>
+            )}
+            
+            {/* Paste Button */}
+            <button
+              type="button"
+              onClick={handlePaste}
+              className="flex-shrink-0 text-xs font-semibold text-[#5a5f68] hover:text-[#1c1b1c] bg-[#f0eded] hover:bg-[#e5e2e2] px-2.5 py-1.5 rounded-lg border border-[#e5e2e2] transition-colors flex items-center gap-1"
+              title="Paste from clipboard"
+            >
+              <Clipboard className="w-3 h-3" /> Paste
+            </button>
           </div>
           <motion.button
             id="hashtag-extract-btn"
@@ -96,7 +142,7 @@ export default function HashtagExtractor() {
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             onClick={handleExtract}
             disabled={loading || !url.trim()}
-            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-primary ripple-btn !rounded-xl !px-7 disabled:opacity-40 disabled:cursor-not-allowed w-full sm:w-auto"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Extract"}
           </motion.button>
@@ -136,9 +182,9 @@ export default function HashtagExtractor() {
           {hashtags.length > 0 && !loading && (
             <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-5">
               {/* Header */}
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[rgba(255,255,255,0.4)] p-4 rounded-2xl border border-[rgba(255,255,255,0.5)] backdrop-blur-sm shadow-sm">
                 <div className="flex items-center gap-3">
-                  <span className="chip bg-[#f9c6d0]/40 text-[#1c1b1c] border border-[#f9c6d0]">
+                  <span className="chip bg-[#f9c6d0]/40 text-[#1c1b1c] border border-[#f9c6d0] font-semibold py-1 px-3">
                     {hashtags.length} hashtags found
                   </span>
                 </div>
@@ -146,42 +192,63 @@ export default function HashtagExtractor() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={copyAll}
-                  className="btn-secondary !py-2 !px-5 !text-[13px] !rounded-xl"
+                  className="btn-secondary !py-2 !px-5 !text-[13px] !rounded-xl flex items-center gap-1.5 shadow-sm text-xs w-full sm:w-auto justify-center"
                 >
                   {allCopied ? <Check className="w-4 h-4 text-[#4ade80]" /> : <Copy className="w-4 h-4" />}
                   {allCopied ? "Copied!" : "Copy All"}
                 </motion.button>
               </div>
 
-              {/* Tag grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {/* Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {hashtags.map((tag, i) => {
                   const rawTag = tag.startsWith("#") ? tag.substring(1) : tag;
+                  const searchUrl = `https://www.youtube.com/hashtag/${rawTag}`;
                   return (
-                    <motion.button
+                    <motion.div
                       key={i}
                       id={`hashtag-item-${i}`}
                       initial={{ opacity: 0, scale: 0.9, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       transition={{ delay: i * 0.04, type: "spring", stiffness: 300 }}
-                      whileHover={{ scale: 1.03, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => copyHashtag(tag, i)}
-                      className="flex items-center justify-between px-4 py-3 rounded-xl border border-[#e5e2e2] bg-white hover:border-[#f9c6d0] hover:bg-[#fcf8f9] transition-all shadow-sm group text-left"
-                      aria-label={`Copy hashtag: ${tag}`}
+                      className="flex flex-col gap-3 p-4 rounded-2xl border border-[#e5e2e2] bg-white shadow-sm hover:border-[#f9c6d0] hover:shadow-md transition-all duration-300 group"
                     >
-                      <div className="flex items-center gap-2 overflow-hidden">
-                         <span className="text-[14px] font-bold text-[#f9c6d0] group-hover:scale-110 transition-transform">#</span>
-                         <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "14px", fontWeight: 600, color: "#1c1b1c" }} className="truncate">
-                           {rawTag}
-                         </span>
+                      {/* Name & Trend */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 overflow-hidden">
+                          <TrendingUp className="w-4 h-4 text-[#f9c6d0] shrink-0" />
+                          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "15px", fontWeight: 700, color: "#1c1b1c" }} className="truncate">
+                            #{rawTag}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex-shrink-0">
-                        {copiedIndex === i
-                          ? <Check className="w-3.5 h-3.5 text-[#4ade80]" />
-                          : <Copy className="w-3.5 h-3.5 text-[#c6c6cb] group-hover:text-[#f9c6d0] transition-colors" />}
+                      
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 mt-2 pt-2 border-t border-[#f6f3f3]">
+                        <a
+                          href={searchUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-1 text-[12px] font-semibold text-[#5a5f68] hover:text-[#1c1b1c] bg-[#f6f3f3] hover:bg-[#f0eded] px-3 py-1.5 rounded-lg border border-[#e5e2e2] flex-grow text-center transition-colors duration-200"
+                          title="Search on YouTube"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" /> Search YouTube
+                        </a>
+                        
+                        <motion.button
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => copyHashtag(tag, i)}
+                          className="flex items-center justify-center gap-1 text-[12px] font-semibold text-[#1c1b1c] bg-white border border-[#e5e2e2] hover:border-[#1c1b1c] px-3 py-1.5 rounded-lg transition-colors duration-200 shrink-0"
+                          title="Copy Hashtag"
+                        >
+                          {copiedIndex === i ? (
+                            <Check className="w-3.5 h-3.5 text-[#4ade80]" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </motion.button>
                       </div>
-                    </motion.button>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -189,6 +256,7 @@ export default function HashtagExtractor() {
           )}
         </AnimatePresence>
       </div>
+      <Toast message={toastMessage} show={toastShow} onClose={() => setToastShow(false)} />
     </ToolLayout>
   );
 }

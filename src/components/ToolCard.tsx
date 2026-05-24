@@ -14,11 +14,11 @@ interface ToolCardProps {
 }
 
 export function ToolCard({ title, description, href, icon: Icon, accentColor, index = 0 }: ToolCardProps) {
-  /* Physics-based 3D tilt */
+  /* Physics-based 3D tilt (up to 10 degrees) */
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [6, -6]), { stiffness: 300, damping: 30 });
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-6, 6]), { stiffness: 300, damping: 30 });
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { stiffness: 300, damping: 30 });
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), { stiffness: 300, damping: 30 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -40,7 +40,7 @@ export function ToolCard({ title, description, href, icon: Icon, accentColor, in
     >
       <Link href={href} tabIndex={-1} aria-label={title}>
         <div
-          className="prismatic-card h-full p-6 flex flex-col relative cursor-pointer group-hover:shadow-[0_24px_48px_rgba(0,0,0,0.09)]"
+          className="prismatic-card h-full p-6 flex flex-col relative cursor-pointer group-hover:shadow-[0_24px_48px_rgba(0,0,0,0.09)] shimmer-on-hover overflow-hidden"
           style={{ transition: "box-shadow 0.3s ease" }}
         >
           {/* Accent top border */}
@@ -49,9 +49,18 @@ export function ToolCard({ title, description, href, icon: Icon, accentColor, in
             style={{ background: accentColor }}
           />
 
-          {/* Accent background glow */}
-          <div
-            className="absolute -top-8 -right-8 w-32 h-32 rounded-full blur-[60px] opacity-0 group-hover:opacity-40 transition-opacity duration-500"
+          {/* Accent background glow pulsing subtly */}
+          <motion.div
+            animate={{
+              scale: [1, 1.15, 1],
+              opacity: [0.15, 0.25, 0.15],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute -top-10 -right-10 w-36 h-36 rounded-full blur-[40px] pointer-events-none group-hover:scale-125 group-hover:opacity-45 transition-all duration-500"
             style={{ background: accentColor }}
             aria-hidden="true"
           />
@@ -60,7 +69,7 @@ export function ToolCard({ title, description, href, icon: Icon, accentColor, in
           <motion.div
             whileHover={{ scale: 1.1, rotate: 4 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
-            className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-[rgba(0,0,0,0.06)] shadow-sm"
+            className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-[rgba(0,0,0,0.06)] shadow-sm bg-white/50"
             style={{ background: accentColor + "55" }}
           >
             <Icon className="w-5 h-5 text-[#1c1b1c]" strokeWidth={1.8} />
@@ -88,6 +97,29 @@ export function ToolCard({ title, description, href, icon: Icon, accentColor, in
             >
               <ArrowUpRight className="w-4 h-4" />
             </motion.span>
+          </div>
+
+          {/* Hover overlay with 'Launch Tool →' CTA */}
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none"
+            style={{
+              background: "rgba(255, 255, 255, 0.88)",
+              backdropFilter: "blur(6px)",
+              borderRadius: "1rem",
+            }}
+          >
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center shadow-md border border-[rgba(255,255,255,0.6)]"
+              style={{ background: accentColor }}
+            >
+              <ArrowUpRight className="w-5 h-5 text-[#1c1b1c]" />
+            </div>
+            <span
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: "13px", letterSpacing: "0.08em" }}
+              className="text-[#1c1b1c] uppercase tracking-widest"
+            >
+              Launch Tool →
+            </span>
           </div>
         </div>
       </Link>

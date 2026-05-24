@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
-import { Image as ImageIcon, Tag, FileText, Layout, UserCircle, Hash, Zap, Shield, Play as YoutubeIcon, ArrowDown, ChevronDown } from "lucide-react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence, useInView } from "framer-motion";
+import { Image as ImageIcon, Tag, FileText, Layout, UserCircle, Hash, Zap, Shield, Play as YoutubeIcon, ArrowDown, ChevronDown, Cloud } from "lucide-react";
 import { ToolCard } from "@/components/ToolCard";
 import { AdsterraBanner } from "@/components/AdsterraBanner";
 import Link from "next/link";
@@ -71,6 +71,12 @@ const features = [
     desc: "Full native support for Shorts, Premieres, Live Streams, and standard VOD formats.",
     color: "#c6d4f9",
   },
+  {
+    icon: Cloud,
+    title: "API Reliability",
+    desc: "Direct CDN access with 99.9% uptime.",
+    color: "#e0c6f9",
+  },
 ];
 
 const faqs = [
@@ -90,7 +96,231 @@ const faqs = [
     q: "Do I need an account or API key?",
     a: "No. Every tool works instantly in your browser — no sign-up, no API keys, no installation required.",
   },
+  {
+    q: "How do I download thumbnails for YouTube Shorts?",
+    a: "Paste any Shorts URL directly into the thumbnail tool. Our extractor handles the vertical format automatically.",
+  },
+  {
+    q: "What is the difference between channel banner and channel logo?",
+    a: "The banner is the wide cover art (2560×1440) displayed at the top of a channel page. The logo is the circular profile avatar displayed next to video titles.",
+  },
 ];
+
+/* ── Count-up Badge (mount-safeguarded) ──────────────────── */
+function CountUpBadge() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = 10342;
+    const duration = 1800; // ms
+    let startTime: number | null = null;
+
+    const animateStep = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const easeProgress = progress * (2 - progress);
+      setCount(Math.round(start + (end - start) * easeProgress));
+      if (progress < 1) {
+        requestAnimationFrame(animateStep);
+      }
+    };
+    requestAnimationFrame(animateStep);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.85 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 250, damping: 22 }}
+      className="inline-flex items-center gap-2 badge-pill mb-8"
+    >
+      <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" aria-hidden="true" />
+      <span className="label-caps text-[#45474b] select-none">
+        Used by {count.toLocaleString()}+ Creators — Free Forever
+      </span>
+    </motion.div>
+  );
+}
+
+/* ── Animated Headline (word slide-in) ──────────────────── */
+function AnimatedHeadline() {
+  const line1 = "The Professional";
+  const line2 = "YouTube Suite.";
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.06,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const wordVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 100,
+        damping: 14,
+      },
+    },
+  };
+
+  return (
+    <motion.h1
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      style={{
+        fontFamily: "'Newsreader', serif",
+        fontSize: "clamp(40px, 7vw, 72px)",
+        fontWeight: 500,
+        letterSpacing: "-0.03em",
+        lineHeight: 1.08,
+        color: "#1c1b1c",
+      }}
+      className="mb-6 flex flex-wrap justify-center"
+    >
+      <span className="w-full flex justify-center flex-wrap">
+        {line1.split(" ").map((word, i) => (
+          <motion.span key={`line1-${i}`} variants={wordVariants} className="inline-block mx-1.5">
+            {word}
+          </motion.span>
+        ))}
+      </span>
+      <span className="w-full flex justify-center flex-wrap">
+        {line2.split(" ").map((word, i) => (
+          <motion.span
+            key={`line2-${i}`}
+            variants={wordVariants}
+            style={{ color: "#5a5f68", fontStyle: "italic" }}
+            className="inline-block mx-1.5"
+          >
+            {word}
+          </motion.span>
+        ))}
+      </span>
+    </motion.h1>
+  );
+}
+
+/* ── Feature Chips under headline ─────────────────────────── */
+function FeatureChips() {
+  const chips = [
+    { label: "Zero Latency", icon: Zap, bg: "rgba(249, 240, 198, 0.25)", color: "#807020" },
+    { label: "Private", icon: Shield, bg: "rgba(198, 249, 216, 0.25)", color: "#207840" },
+    { label: "Universal", icon: YoutubeIcon, bg: "rgba(198, 212, 249, 0.25)", color: "#3050b0" },
+  ];
+
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: {
+            staggerChildren: 0.15,
+            delayChildren: 0.5,
+          },
+        },
+      }}
+      className="flex items-center justify-center gap-3 mb-8 flex-wrap"
+    >
+      {chips.map((chip) => {
+        const Icon = chip.icon;
+        return (
+          <motion.div
+            key={chip.label}
+            variants={{
+              hidden: { opacity: 0, scale: 0.9, y: 10 },
+              visible: {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                transition: { type: "spring", stiffness: 200, damping: 15 },
+              },
+            }}
+            whileHover={{ scale: 1.05 }}
+            style={{
+              background: chip.bg,
+              color: chip.color,
+            }}
+            className="chip px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-white/50"
+          >
+            <Icon className="w-3.5 h-3.5" strokeWidth={2} />
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: "11px", letterSpacing: "0.03em", textTransform: "uppercase" }}>
+              {chip.label}
+            </span>
+          </motion.div>
+        );
+      })}
+    </motion.div>
+  );
+}
+
+/* ── Stat Item with Count-up animation on scroll ─────────── */
+function StatItem({ value, label, prefix = "", suffix = "", index, direction = "up" }: {
+  value: number;
+  label: string;
+  prefix?: string;
+  suffix?: string;
+  index: number;
+  direction?: "up" | "down";
+}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [count, setCount] = useState(direction === "up" ? 0 : 500);
+
+  useEffect(() => {
+    if (!isInView) return;
+    let start = direction === "up" ? 0 : 500;
+    if (label.toLowerCase().includes("cost")) {
+      start = 99;
+    }
+    const end = value;
+    const duration = 1800; // ms
+    let startTime: number | null = null;
+
+    const animateStep = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const easeProgress = progress * (2 - progress);
+      const currentVal = Math.round(start + (end - start) * easeProgress);
+      setCount(currentVal);
+      if (progress < 1) {
+        requestAnimationFrame(animateStep);
+      }
+    };
+    requestAnimationFrame(animateStep);
+  }, [isInView, value, direction, label]);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.08, type: "spring", stiffness: 100 }}
+      className="text-center p-6 rounded-2xl bg-[rgba(255,255,255,0.4)] border border-[rgba(255,255,255,0.5)] shadow-sm hover:shadow-md transition-shadow backdrop-blur-sm"
+    >
+      <div
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 600, letterSpacing: "-0.03em", color: "#1c1b1c", lineHeight: 1 }}
+        className="mb-1"
+      >
+        {prefix}{count}{suffix}
+      </div>
+      <div className="label-caps text-[#76777b] text-[11px] font-bold tracking-wider">{label}</div>
+    </motion.div>
+  );
+}
 
 /* ── Floating Orb (physics) ─────────────────────────────── */
 function Orb({ size, top, left, color, delay }: any) {
